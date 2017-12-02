@@ -1,0 +1,98 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/tab_unselect"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_20">
+
+            <TextView
+                android:id="@+id/tv_product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/margin_20"
+                android:layout_marginTop="@dimen/margin_20"
+                android:text="鲜香菇（大）"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_14" />
+
+            <TextView
+                android:id="@+id/tv_unit"
+                android:layout_below="@+id/tv_product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top_10"
+                android:layout_marginLeft="@dimen/margin_20"
+                android:text="kg"
+                android:textColor="@color/gray_text"
+                android:textSize="@dimen/text_size_14" />
+
+            <CheckBox
+                android:id="@+id/cbtn_choose"
+                style="@style/checkbox"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:background="@drawable/new_square_bg" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/gray_line"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <!--<LinearLayout
+        android:id="@+id/tab_select"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/gray_background"
+        android:orientation="horizontal" >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_top_10">
+            <TextView
+                android:id="@+id/item_list_search_brand_text_click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:padding="20dp"
+                android:text="鲜香菇（大）"
+                android:textSize="@dimen/text_size_14"
+                android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/item_list_search_brand_unit_click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_180"
+                android:layout_toRightOf="@+id/item_list_search_brand_text_click"
+                android:padding="20dp"
+                android:text="kg"
+                android:textSize="@dimen/text_size_14"
+                android:textColor="@color/gray_text" />
+            <CheckBox
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:checked="true"
+                android:background="@drawable/new_square_bg"
+                style="@style/checkbox" />
+        </RelativeLayout>
+    </LinearLayout>-->
+
+</LinearLayout>

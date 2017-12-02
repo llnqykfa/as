@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="storm-pda-api">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/storm-pda-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
