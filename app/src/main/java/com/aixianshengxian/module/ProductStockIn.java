@@ -1,6 +1,6 @@
 package com.aixianshengxian.module;
 
-import com.xmzynt.storm.common.api.base.standardentity.StandardEntity;
+import com.xmzynt.storm.basic.standardentity.StandardEntity;
 
 import java.util.List;
 

@@ -1,0 +1,89 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="AppTheme.Base">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--toolbar (action Bar)颜色-->
+        <item name="colorPrimary">#EE7C1C</item>
+        <!--状态栏颜色 -->
+        <item name="colorPrimaryDark">#EE7C1C</item>
+        <!-- 窗口背景色-->
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+    <style name="MyTabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <item name="android:textSize">16dp</item>
+    <item name="android:textColor">#333333</item>
+    <item name="android:textStyle">bold</item>
+</style>
+    <!-- TabLayout样式 -->
+    <style name="TabLayoutStyle" parent="Widget.Design.TabLayout">
+        <!--<item name="tabBackground">@drawable/bg_list_item_selector</item>-->
+        <item name="tabIndicatorColor">@color/colorPrimary</item>
+        <item name="tabSelectedTextColor">@color/colorPrimary</item>
+        <item name="tabTextAppearance">@style/TabTextAppearence</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabPaddingEnd">0dp</item>
+    </style>
+    <style name="TabTextAppearence" parent="TextAppearance.Design.Tab">
+        <!--<item name="android:textColor">@color/tab_text_color_selector</item>-->
+        <item name="android:textSize">16sp</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="Popup_Animation_DownScale" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/enter_dropdown</item>
+        <item name="android:windowExitAnimation">@anim/exit_scale</item>
+    </style>
+
+    <style name="Popup_Animation_PushDownUp" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_up_in</item>
+        <item name="android:windowExitAnimation">@anim/push_up_out</item>
+    </style>
+
+    <style name="Popup_Animation_DownUp" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/enter_dropdown</item>
+        <item name="android:windowExitAnimation">@anim/exit_dropup</item>
+    </style>
+
+    <style name="Popup_Animation_UpDown" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/enter_dropup</item>
+        <item name="android:windowExitAnimation">@anim/exit_dropdown</item>
+    </style>
+
+    <style name="Popup_Animation_ScaleScale" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/enter_scale</item>
+        <item name="android:windowExitAnimation">@anim/exit_scale</item>
+    </style>
+
+    <style name="Popup_Animation_Alpha" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/layout_alpha_in</item>
+        <item name="android:windowExitAnimation">@anim/layout_alpha_out</item>
+    </style>
+
+    <style name="Popup_Animation_SlideUp" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/enter_dropup</item>
+        <item name="android:windowExitAnimation">@anim/exit_dropdown</item>
+    </style>
+    <style name="AnimationFade1">
+        <!-- PopupWindow从下弹出的效果 -->
+        <item name="android:windowEnterAnimation">@anim/push_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/push_bottom_out</item>
+    </style>
+
+    <style name="checkbox" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/select_checkbox</item>
+    </style>
+
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/gray_line</item>
+        <item name="colorControlActivated">@color/gray_line</item>
+    </style>
+
+</resources>

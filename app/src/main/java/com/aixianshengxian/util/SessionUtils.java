@@ -55,6 +55,9 @@ public class SessionUtils {
         Gson gson = new Gson();
         if (org != null) {
             instance.sharedPreferencesUtils.setSP(xmlFileName,"org",gson.toJson(org));
+        }else{
+            org = new IdName(getCustomerUUID(),getCustomerName());
+            instance.sharedPreferencesUtils.setSP(xmlFileName,"org",gson.toJson(org));
         }
     }
     public String getSessionId() {
@@ -146,4 +149,5 @@ public class SessionUtils {
     public String getValue(String key){
         return instance.sharedPreferencesUtils.getStringSP(xmlFileName, key);
     }
+
 }

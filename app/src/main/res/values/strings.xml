@@ -1,0 +1,10 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">绿百合</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_connected_to">连接到 <xliff:g id="device_name">%1$s</xliff:g></string>
+    <string name="title_connecting">连接中…&#8230;</string>
+    <string name="title_not_connected">没有连接到设备</string>
+
+</resources>

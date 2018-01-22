@@ -1,26 +1,26 @@
 package com.aixianshengxian.module;
 
-import com.xmzynt.storm.common.api.base.standardentity.StandardEntity;
-import com.xmzynt.storm.service.goods.Goods;
+import com.xmzynt.storm.basic.standardentity.StandardEntity;
+import com.xmzynt.storm.service.purchase.plan.ForecastPurchase;
 
 /**
  * Created by Administrator on 2017/11/13.
  */
 
-public class GoodsItem extends StandardEntity {
-    private Goods Goods;
+public class ForecastPurchaseItem extends StandardEntity {
+    private ForecastPurchase forecastPurchase;
     private Boolean isSelector ;
 
-    public GoodsItem(Goods Goods,Boolean isSelector) {
-        this.Goods = Goods;
+    public ForecastPurchaseItem(ForecastPurchase forecastPurchase, Boolean isSelector) {
+        this.forecastPurchase = forecastPurchase;
         this.isSelector = isSelector;
     }
 
-    public Goods getGoods() {
-        return Goods ;
+    public ForecastPurchase getForecastPurchase() {
+        return forecastPurchase ;
     }
-    public void setGoods(Goods Goods) {
-        this.Goods = Goods;
+    public void setForecastPurchase(ForecastPurchase forecastPurchase) {
+        this.forecastPurchase = forecastPurchase;
     }
     public Boolean getSelector() {
         return isSelector;

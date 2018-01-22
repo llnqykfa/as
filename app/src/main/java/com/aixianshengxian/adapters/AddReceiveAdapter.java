@@ -20,7 +20,7 @@ import java.util.Map;
  * Created by Administrator on 2017/11/13.
  */
 
-public class SelectReceiveAdapter extends RecyclerView.Adapter<SelectReceiveAdapter.ViewHolder> {
+public class AddReceiveAdapter extends RecyclerView.Adapter<AddReceiveAdapter.ViewHolder> {
     private List<StockOutRecordItem> mStockOutRecordItem;
     private Map<String,StockOutRecordItem> mCheckedOutItem;
     private boolean[] mDataSelectList;//复选框是否选中
@@ -55,7 +55,7 @@ public class SelectReceiveAdapter extends RecyclerView.Adapter<SelectReceiveAdap
         return mCheckedOutItem;
     }
 
-    public SelectReceiveAdapter(List<StockOutRecordItem> StockOutRecordItem, Map<String,StockOutRecordItem> CheckedOutItem, Context context){
+    public AddReceiveAdapter(List<StockOutRecordItem> StockOutRecordItem, Map<String,StockOutRecordItem> CheckedOutItem, Context context){
         this.mStockOutRecordItem = StockOutRecordItem;
         this.mCheckedOutItem = CheckedOutItem;
         this.context = context;
@@ -69,7 +69,7 @@ public class SelectReceiveAdapter extends RecyclerView.Adapter<SelectReceiveAdap
     }
 
     //给监听设置一个构造函数，用于main中调用
-    public void setOnItemListener(SelectReceiveAdapter.OnItemClickListener mOnItemClickListener) {
+    public void setOnItemListener(AddReceiveAdapter.OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 

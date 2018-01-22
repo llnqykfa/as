@@ -21,7 +21,7 @@ import java.util.Map;
  * Created by Administrator on 2017/10/27.
  */
 
-public class SelectProductReceiveAdapter extends RecyclerView.Adapter<SelectProductReceiveAdapter.ViewHolder> {
+public class StockOutRecordItemAdapter extends RecyclerView.Adapter<StockOutRecordItemAdapter.ViewHolder> {
     private List<StockOutRecordItem> mStockOutRecordItem;
     private Map<String,StockOutRecordItem> mCheckedStockOutRecordItem;
     private boolean[] mDataSelectList;//复选框是否选中
@@ -52,7 +52,7 @@ public class SelectProductReceiveAdapter extends RecyclerView.Adapter<SelectProd
         }
     }
 
-    public SelectProductReceiveAdapter(List<StockOutRecordItem> MData,Map<String,StockOutRecordItem> CheckedStockOutRecordItem, Context context) {
+    public StockOutRecordItemAdapter(List<StockOutRecordItem> MData, Map<String,StockOutRecordItem> CheckedStockOutRecordItem, Context context) {
         this.mStockOutRecordItem = MData;
         this.mCheckedStockOutRecordItem = CheckedStockOutRecordItem;
         this.context = context;
@@ -71,7 +71,7 @@ public class SelectProductReceiveAdapter extends RecyclerView.Adapter<SelectProd
     }
 
     //给监听设置一个构造函数，用于main中调用
-    public void setOnItemListener(SelectProductReceiveAdapter.OnItemClickListener mOnItemClickListener) {
+    public void setOnItemListener(StockOutRecordItemAdapter.OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
@@ -87,10 +87,10 @@ public class SelectProductReceiveAdapter extends RecyclerView.Adapter<SelectProd
     }
 
     @Override
-    public SelectProductReceiveAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StockOutRecordItemAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view= LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_list_select_receive,parent,false);//传入布局
-        final SelectProductReceiveAdapter.ViewHolder holder = new SelectProductReceiveAdapter.ViewHolder(view);
+        final StockOutRecordItemAdapter.ViewHolder holder = new StockOutRecordItemAdapter.ViewHolder(view);
 
         if (mOnItemClickListener!=null) {
             //整体监听
@@ -130,6 +130,7 @@ public class SelectProductReceiveAdapter extends RecyclerView.Adapter<SelectProd
                 holder.tv_receive_time.setText("");
             }
 
+            holder.itemView.setTag(position);
             holder.cbtn_choose.setTag(position);
 
             if(stockOutRecord.getSelector()){
@@ -143,6 +144,27 @@ public class SelectProductReceiveAdapter extends RecyclerView.Adapter<SelectProd
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if((Integer)holder.cbtn_choose.getTag() == position){
                         boolean ischeck = holder.cbtn_choose.isChecked();
+                        if(holder.cbtn_choose.isChecked()){
+                            stockOutRecord.setSelector(true);
+                            mCheckedStockOutRecordItem.put(stockOutRecord.getStockOutRecord().getUuid(),stockOutRecord);
+                        }else {
+                            stockOutRecord.setSelector(false);
+                            mCheckedStockOutRecordItem.remove(stockOutRecord.getStockOutRecord().getUuid());
+                        }
+
+                    }else {
+                        android.util.Log.d("stockOutRecordList", "position: "+ position);
+                    }
+                }
+            });
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if((Integer)holder.cbtn_choose.getTag() == position){
+                        stockOutRecord.setSelector(!stockOutRecord.getSelector());
+                        holder.cbtn_choose.setChecked(stockOutRecord.getSelector());
+                        notifyItemChanged(position);
                         if(holder.cbtn_choose.isChecked()){
                             stockOutRecord.setSelector(true);
                             mCheckedStockOutRecordItem.put(stockOutRecord.getStockOutRecord().getUuid(),stockOutRecord);

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_add_goods"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.aixianshengxian.activity.addOrder.AddGoodsActivity">
+<include layout="@layout/head"></include>
+
+    <include layout="@layout/search_head"></include>
+
+    <!--<android.support.v4.widget.SwipeRefreshLayout-->
+        <!--android:id="@+id/swipe_refresh_widget"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1">-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btn_add_new_goods"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_60"
+            android:layout_marginRight="@dimen/margin_60"
+            android:layout_marginBottom="@dimen/margin_top_10"
+            android:background="@drawable/green_corners_bg"
+            android:textColor="@color/green_text"
+            android:textSize="18dp"
+            android:text="确  定"
+            android:layout_marginTop="@dimen/margin_top_10"
+            android:layout_alignParentBottom="true" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recylerView_goods_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btn_add_new_goods">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+
+   <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+</LinearLayout>

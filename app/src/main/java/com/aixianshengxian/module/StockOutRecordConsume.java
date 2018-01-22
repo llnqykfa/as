@@ -1,20 +1,26 @@
 package com.aixianshengxian.module;
 
-import com.xmzynt.storm.common.api.base.standardentity.StandardEntity;
-import com.xmzynt.storm.service.goods.Goods;
+import com.xmzynt.storm.basic.standardentity.StandardEntity;
 import com.xmzynt.storm.service.wms.stockout.StockOutRecord;
+
+
+import java.math.BigDecimal;
 
 /**
  * Created by Administrator on 2017/11/13.
  */
 
-public class StockOutRecordItem extends StandardEntity {
+public class StockOutRecordConsume extends StandardEntity {
     private StockOutRecord StockOutRecord;
-    private Boolean isSelector ;
+    private BigDecimal consume;
 
-    public StockOutRecordItem(StockOutRecord StockOutRecord, Boolean isSelector) {
+    public StockOutRecordConsume() {
+        super();
+    }
+
+    public StockOutRecordConsume(StockOutRecord StockOutRecord, BigDecimal consume) {
         this.StockOutRecord = StockOutRecord;
-        this.isSelector = isSelector;
+        this.consume = consume;
     }
 
     public StockOutRecord getStockOutRecord () {
@@ -23,10 +29,10 @@ public class StockOutRecordItem extends StandardEntity {
     public void setStockOutRecord(StockOutRecord StockOutRecord) {
         this.StockOutRecord = StockOutRecord;
     }
-    public Boolean getSelector() {
-        return isSelector;
+    public BigDecimal getConsume() {
+        return consume;
     }
-    public void setSelector(Boolean selector) {
-        isSelector = selector;
+    public void setConsume(BigDecimal consume) {
+        this.consume = consume;
     }
 }

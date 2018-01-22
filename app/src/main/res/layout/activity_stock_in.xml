@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.aixianshengxian.activity.machine.StockInActivity">
+
+    <LinearLayout
+        android:id="@+id/ll_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/head"></include>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/ll_head"
+        android:layout_above="@+id/ll_bottom"
+        android:id="@+id/linearLayout">
+        <ScrollView
+            android:id="@+id/ll_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/ll_bottom" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/margin_top_5">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_20"
+                    android:layout_marginRight="@dimen/margin_20"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="入库仓库"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_size_14" />
+
+                        <TextView
+                            android:id="@+id/tv_depot"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:drawableRight="@mipmap/down"
+                            android:text="请选择仓库"
+                            android:paddingLeft="@dimen/margin_top_10"
+                            android:paddingRight="@dimen/margin_15"
+                            android:textSize="@dimen/text_size_14"
+                            android:textColor="@color/gray" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_top_10"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="加工员"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_size_14" />
+
+                        <TextView
+                            android:id="@+id/tv_operator"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:drawableRight="@mipmap/down"
+                            android:text="请选择加工员"
+                            android:paddingLeft="@dimen/margin_top_10"
+                            android:paddingRight="@dimen/margin_15"
+                            android:textSize="@dimen/text_size_14"
+                            android:textColor="@color/gray" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_top_10"
+                    android:layout_marginLeft="@dimen/margin_20"
+                    android:layout_marginRight="@dimen/margin_20"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_add_stock_in"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@mipmap/down"
+                        android:drawablePadding="@dimen/margin_top_10"
+                        android:text="入库商品"
+                        android:textSize="@dimen/text_size_14"
+                        android:textColor="@color/black" />
+
+                    <!--<LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_top_5"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_15"
+                            android:text="商品"
+                            android:textSize="@dimen/text_size_13"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_40"
+                            android:text="入库数"
+                            android:textSize="@dimen/text_size_13"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_50"
+                            android:text="入库单价"
+                            android:textSize="@dimen/text_size_13"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_20"
+                            android:text="保质期"
+                            android:textSize="@dimen/text_size_13"
+                            android:textColor="@color/black" />
+                    </LinearLayout>-->
+
+                </LinearLayout>
+
+                <com.aixianshengxian.view.RefreshRecyclerView
+                    android:id="@+id/listview_stock_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_top_5">
+
+                </com.aixianshengxian.view.RefreshRecyclerView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_top_5">
+
+                    <TextView
+                        android:id="@+id/tv_add_receive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_20"
+                        android:layout_marginRight="@dimen/margin_20"
+                        android:drawableRight="@mipmap/down"
+                        android:drawablePadding="@dimen/margin_top_10"
+                        android:text="领料记录"
+                        android:textSize="@dimen/text_size_14"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <com.aixianshengxian.view.RefreshRecyclerView
+                    android:id="@+id/listview_receive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_top_5">
+
+                </com.aixianshengxian.view.RefreshRecyclerView>
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_80"
+            android:layout_marginLeft="@dimen/margin_80"
+            android:layout_marginTop="@dimen/margin_top_5"
+            android:layout_marginBottom="@dimen/margin_top_10"
+            android:text="保  存"
+            android:textSize="@dimen/text_size_16"
+            android:textColor="@color/green_text"
+            android:background="@drawable/green_corners_bg"/>
+    </LinearLayout>
+
+</RelativeLayout>

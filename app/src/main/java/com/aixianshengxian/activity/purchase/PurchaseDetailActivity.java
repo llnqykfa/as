@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.aixianshengxian.BaseActivity;
 import com.aixianshengxian.R;
+import com.aixianshengxian.activity.check.CheckDetailActivity;
 import com.aixianshengxian.adapters.PurchaseDetailAdapter;
 import com.aixianshengxian.constant.DataConstant;
 import com.aixianshengxian.constant.UrlConstants;
@@ -43,20 +44,21 @@ import com.aixianshengxian.printers.DialogManager;
 import com.aixianshengxian.util.DatesUtils;
 import com.aixianshengxian.util.SessionUtils;
 import com.bixolon.printer.BixolonPrinter;
-import com.xmzynt.storm.common.api.common.Platform;
-import com.xmzynt.storm.common.api.util.GsonUtil;
-import com.xmzynt.storm.mdata.service.common.MDataConstants;
-import com.xmzynt.storm.mdata.service.user.common.UserIdentity;
+import com.xmzynt.storm.basic.BasicConstants;
+import com.xmzynt.storm.basic.user.UserIdentity;
+import com.xmzynt.storm.common.Platform;
 import com.xmzynt.storm.service.purchase.bill.PurchaseBill;
 import com.xmzynt.storm.service.purchase.bill.PurchaseBillLine;
 import com.xmzynt.storm.service.purchase.bill.PurchaseBillStatus;
+import com.xmzynt.storm.service.purchase.bill.PurchaseData;
+import com.xmzynt.storm.util.GsonUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
+;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -64,8 +66,8 @@ import java.util.Set;
 import okhttp3.Call;
 
 import static com.aixianshengxian.constant.DataConstant.URL_PURCHASE_DELETE;
-import static com.bixolon.printer.BixolonPrinter.TEXT_ATTRIBUTE_UNDERLINE1;
 import static com.bixolon.printer.BixolonPrinter.TEXT_SIZE_VERTICAL1;
+import static com.bixolon.printer.BixolonPrinter.TEXT_SIZE_VERTICAL2;
 
 public class PurchaseDetailActivity extends BaseActivity implements View.OnClickListener {
     public static final String TAG = "BixolonPrinter";
@@ -100,6 +102,7 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
     private String Operator,Car,Driver,Remark,TotalPrice;
 
     private List<PurchaseBillLine> mData = new ArrayList<>();
+    private PurchaseData mPurchaseData;
 //    private List<PurchaseDetail> mDataWhole;
     private final String[] mListNoAudit = {"标签打印","删除","编辑","审核"};
     private final String[] mListAudit = {"反审核","标签打印"};
@@ -241,6 +244,12 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
                 public void onPinterClick(PurchaseBillLine purchasedetail) {
                     printText(purchasedetail);
                 }
+
+                @Override
+                public void onItemClick(PurchaseBillLine purchasedetail) {
+                    String ucode = purchasedetail.getUuid();
+                    getScanPurchaseData(ucode);
+                }
             });
             product_listview.setAdapter(mAdapter);
 
@@ -312,7 +321,7 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
                     if (msg.obj == null) {
                         showCustomToast("没有配对的蓝牙打印机");
                         //Toast.makeText(getApplicationContext(), "没有配对的蓝牙打印机", Toast.LENGTH_SHORT).show();
-                    } else {
+                    } else {//获取与蓝牙配对的打印机名称
                         DialogManager.showBluetoothDialog(PurchaseDetailActivity.this, (Set<BluetoothDevice>) msg.obj);
                     }
                     return true;
@@ -320,24 +329,11 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
                     switch (msg.arg1) {
                         case BixolonPrinter.STATE_CONNECTED:
                             showCustomToast(getString(R.string.title_connected_to, mConnectedDeviceName));
-
                             mIsConnected = true;
-                            mBixolonPrinter.getStatus();
-                            mBixolonPrinter.setPageMode();
-                            mBixolonPrinter.setPrintArea(0, 0, 500, 300);
-                            mBixolonPrinter.printLine(4, 4, 496, 300, 75, true);
-                            mBixolonPrinter.formFeed(true);
-                            int Textalignment = BixolonPrinter.ALIGNMENT_LEFT;
-                            int attribute = BixolonPrinter.TEXT_ATTRIBUTE_FONT_A | TEXT_ATTRIBUTE_UNDERLINE1;
-                            int Textsize = BixolonPrinter.TEXT_SIZE_HORIZONTAL1 | TEXT_SIZE_VERTICAL1;
-
-                            PurchaseDetailActivity.mBixolonPrinter.printText("Textdata", Textalignment, attribute, Textsize, true);
                             break;
-
                         case BixolonPrinter.STATE_CONNECTING:
                             showCustomToast(getString(R.string.title_connecting));
                             break;
-
                         case BixolonPrinter.STATE_NONE:
                             showCustomToast(getString(R.string.title_not_connected));
                             mIsConnected = false;
@@ -360,44 +356,36 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
     });
 
     private void printText(PurchaseBillLine purchasedetail) {
-        /*String Qrdata = purchasedetail.getUuid();
-        int Qralignment = BixolonPrinter.ALIGNMENT_CENTER;
-        int model = BixolonPrinter.QR_CODE_MODEL2;
-        int Qrsize = Qrdata.length();
-        PurchaseDetailActivity.mBixolonPrinter.printQrCode(Qrdata, Qralignment, model, Qrsize, true);
+        mBixolonPrinter.setPageMode();//页面模式
+        mBixolonPrinter.setPrintArea(0,0,670,216);//打印范围
 
-        String GoodsName = purchasedetail.getGoods().getName();
-        String Line1;
-        if (GoodsName.length() > 8) {
-            Line1 = GoodsName.substring(1,8);
-        } else {
-            Line1 = GoodsName;
-        }
+        //打印二维码
+        mBixolonPrinter.setAbsolutePrintPosition(0);//X坐标
+        mBixolonPrinter.setAbsoluteVerticalPrintPosition(140);//内容高
+        PurchaseDetailActivity.mBixolonPrinter.printQrCode(purchasedetail.getUuid(), BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.QR_CODE_MODEL2, 5, true);
 
-        String Num = String.valueOf(purchasedetail.getPurchaseQty());
-        String shortNum;
-        if (Num.length() >6) {
-            shortNum = Num.substring(1,6);
-        } else {
-            shortNum = Num;
-        }
+        //打印文本
+        String goodsName = purchasedetail.getGoods().getName();
+        mBixolonPrinter.setAbsolutePrintPosition(200);//X坐标
+        mBixolonPrinter.setAbsoluteVerticalPrintPosition(45);//内容高0
+        PurchaseDetailActivity.mBixolonPrinter.printText(goodsName, BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, BixolonPrinter.TEXT_SIZE_HORIZONTAL2|TEXT_SIZE_VERTICAL2, false);
 
-        String Unit = purchasedetail.getGoodsUnit().getName();
-        String Line2 = shortNum + Unit;
-        String customeName=purchasedetail.getCustomer()==null ?"":purchasedetail.getCustomer().getName();
-        if(purchasedetail.getCustomerDept()!=null){
-            customeName+= "【"+purchasedetail.getCustomerDept().getName()+"】";
-        }
-        String Line3 = customeName;
-        String Line4 = mPurchaseBill.getSupplier() == null ?"":mPurchaseBill.getSupplier().getName();*/
+        String purchaseQty = purchasedetail.getPurchaseQty().doubleValue()+purchasedetail.getGoodsUnit().getName();
+        mBixolonPrinter.setAbsolutePrintPosition(200);//X坐标
+        mBixolonPrinter.setAbsoluteVerticalPrintPosition(80);//内容高
+        PurchaseDetailActivity.mBixolonPrinter.printText(purchaseQty, BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, BixolonPrinter.TEXT_SIZE_HORIZONTAL1|TEXT_SIZE_VERTICAL1, false);
 
-        int Textalignment = BixolonPrinter.ALIGNMENT_LEFT;
-        int attribute = BixolonPrinter.TEXT_ATTRIBUTE_FONT_A;
-        int Textsize = BixolonPrinter.TEXT_SIZE_HORIZONTAL1|TEXT_SIZE_VERTICAL1;
+        String customerName=purchasedetail.getCustomer()==null ?"暂无客户":purchasedetail.getCustomer().getName()+(purchasedetail.getCustomerDept()==null?"":"【"+purchasedetail.getCustomerDept().getName()+"】");
+        mBixolonPrinter.setAbsolutePrintPosition(200);//X坐标
+        mBixolonPrinter.setAbsoluteVerticalPrintPosition(110);//内容高
+        PurchaseDetailActivity.mBixolonPrinter.printText(customerName, BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, BixolonPrinter.TEXT_SIZE_HORIZONTAL1|TEXT_SIZE_VERTICAL1, false);
 
-        //String Textdata = Line1 + "\n" + Line2 + "\n" + Line3 + "\n" + Line4;
+        String supplierName = mPurchaseBill.getSupplier() == null ?"暂无供应商":mPurchaseBill.getSupplier().getName();
+        mBixolonPrinter.setAbsolutePrintPosition(200);//X坐标
+        mBixolonPrinter.setAbsoluteVerticalPrintPosition(140);//内容高
+        PurchaseDetailActivity.mBixolonPrinter.printText(supplierName, BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, BixolonPrinter.TEXT_SIZE_HORIZONTAL1|TEXT_SIZE_VERTICAL1, false);
 
-        PurchaseDetailActivity.mBixolonPrinter.printText("Textdata", Textalignment, attribute, Textsize, true);
+        mBixolonPrinter.formFeed(true);
     }
 
     public void showDeleteAlertDialog() {
@@ -429,11 +417,12 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
             public void onResultChanged(int index) {
                 switch (mListNoAudit[index]) {
                     case "标签打印":
-
+                        for (int i = 0;i < mData.size();i ++) {
+                            printText(mData.get(i));
+                        }
                         break;
                     case "删除":
                         showDeleteAlertDialog();
-
                         break;
                     case "编辑":
                         Intent intent = new Intent(PurchaseDetailActivity.this,PurchaseEditActivity.class);
@@ -461,6 +450,9 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
                         getPurchaseOrder();
                         break;
                     case "标签打印":
+                        for (int i = 0;i < mData.size();i ++) {
+                            printText(mData.get(i));
+                        }
                         break;
                 }
             }
@@ -522,7 +514,64 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
     public interface onOperatePurchasesBillInterface{
         void onError(String message);
 
-        void onOperatePurchasesBillSuccess(String data,int tag);
+        void onOperatePurchasesBillSuccess(String data, int tag);
+    }
+
+    //获取采购信息
+    private void getScanPurchaseData(String ucode) {
+        String userUuid = SessionUtils.getInstance(getApplicationContext()).getCustomerUUID();
+        String userName = SessionUtils.getInstance(getApplicationContext()).getLoginPhone();
+        String sessionId = SessionUtils.getInstance(getApplicationContext()).getSessionId();
+
+        JSONObject reparams = new JSONObject();
+        try {
+            JSONObject body = new JSONObject();
+            try {
+                body.put(BasicConstants.Field.UUID,ucode);
+                reparams.put(BasicConstants.URL_BODY, body);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            reparams.put(BasicConstants.URL_PLATFORM, Platform.android.name());
+            reparams.put(BasicConstants.Field.USER_IDENTITY, UserIdentity.merchant.name());
+            reparams.put(DataConstant.SESSIONID, sessionId);
+            reparams.put(BasicConstants.Field.USER_UUID, userUuid);
+            reparams.put(BasicConstants.Field.USER_NAME, userName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        OkHttpUtils.postString().url(UrlConstants.URL_PURCHASE_SCAN_DATA)
+                .addHeader("Cookie", "PHPSESSID=" + 123456)
+                .addHeader("X-Requested-With", "XMLHttpRequest")
+                .addHeader("Content-Type", "application/json;chartset=utf-8")
+                .content(reparams.toString())
+                .build()
+                .execute(new StringCallback() {
+
+                    @Override
+                    public void onError(Call call, Exception e, int i) {
+                        showCustomToast("请求失败");
+                    }
+
+                    @Override
+                    public void onResponse(String s, int i) {
+
+                        ResponseBean response = GsonUtil.getGson().fromJson(s, ResponseBean.class);
+                        if (response.getErrorCode() == 0) {
+                            mPurchaseData = GsonUtil.getGson().fromJson(response.getData(),PurchaseData.class);
+                            Intent intent1 = new Intent(PurchaseDetailActivity.this,CheckDetailActivity.class);
+                            Bundle bundle1 = new Bundle();
+                            bundle1.putSerializable("PurchaseData", (Serializable) mPurchaseData);
+                            intent1.putExtras(bundle1);
+                            startActivity(intent1);
+
+                            showCustomToast("请求成功");
+                            showLogDebug("main", s);
+                        }  else {
+                            showCustomToast(response.getMessage());
+                        }
+                    }
+                });
     }
 
 //    //作废

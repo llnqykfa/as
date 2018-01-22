@@ -1,33 +1,63 @@
 package com.aixianshengxian.module;
 
-import com.xmzynt.storm.common.api.base.standardentity.StandardEntity;
-import com.xmzynt.storm.service.wms.stockout.StockOutRecord;
+import com.xmzynt.storm.basic.standardentity.StandardEntity;
+import com.xmzynt.storm.service.process.ForecastProcessPlan;
+
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/11/13.
  */
 
-public class StockOutRecordConsume extends StandardEntity {
-    private StockOutRecord StockOutRecord;
-    private BigDecimal consume;
+public class ForecastProcessPlanItem extends StandardEntity {
+    private ForecastProcessPlan forecastProcessPlan;
+    private BigDecimal stockInNum;//入库数
+    private BigDecimal price;//入库单价
+    private int day;//保质期
+    private List<String> basketCodes;//绑定码
 
-    public StockOutRecordConsume(StockOutRecord StockOutRecord, BigDecimal consume) {
-        this.StockOutRecord = StockOutRecord;
-        this.consume = consume;
+    public ForecastProcessPlanItem() {
+        super();
+    }
+    public ForecastProcessPlanItem(ForecastProcessPlan forecastProcessPlan, BigDecimal stockInNum, BigDecimal price,
+                                   int day,List<String> basketCodes) {
+        this.forecastProcessPlan = forecastProcessPlan;
+        this.stockInNum = stockInNum;
+        this.price = price;
+        this.day = day;
+        this.basketCodes = basketCodes;
     }
 
-    public StockOutRecord getStockOutRecord () {
-        return StockOutRecord  ;
+    public ForecastProcessPlan getForecastProcessPlan() {
+        return forecastProcessPlan  ;
     }
-    public void setStockOutRecord(StockOutRecord StockOutRecord) {
-        this.StockOutRecord = StockOutRecord;
+    public void setForecastProcessPlan(ForecastProcessPlan corecastProcessPlan) {
+        this.forecastProcessPlan = corecastProcessPlan;
     }
-    public BigDecimal getConsume() {
-        return consume;
+    public BigDecimal getStockInNum() {
+        return stockInNum;
     }
-    public void setConsume(BigDecimal consume) {
-        this.consume = consume;
+    public void setStockInNum(BigDecimal stockInNum) {
+        this.stockInNum = stockInNum;
+    }
+    public BigDecimal getPrice() {
+        return price;
+    }
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+    public int getDay() {
+        return day;
+    }
+    public void setDay(int day) {
+        this.day = day;
+    }
+    public List<String> getBasketCodes() {
+        return basketCodes;
+    }
+    public void setBasketCodes(List<String> basketCodes) {
+        this.basketCodes = basketCodes;
     }
 }

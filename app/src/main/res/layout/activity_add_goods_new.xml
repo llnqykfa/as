@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_add_goods_new"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    tools:context="com.aixianshengxian.activity.addOrder.AddGoodsNewActivity">
+    <include layout="@layout/head"></include>
+
+    <include layout="@layout/search_head"></include>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
+            xmlns:ptr="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/lvGoodsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#00000000"
+            android:divider="#19000000"
+            android:dividerHeight="4dp"
+            android:fadingEdge="none"
+            android:fastScrollEnabled="false"
+            android:footerDividersEnabled="false"
+            android:headerDividersEnabled="false"
+            android:smoothScrollbar="true"
+            ptr:ptrMode="both">
+       </com.handmark.pulltorefresh.library.PullToRefreshListView>
+
+        <Button
+            android:id="@+id/btn_add_new_goods"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_60"
+            android:layout_marginRight="@dimen/margin_60"
+            android:layout_marginBottom="@dimen/margin_top_10"
+            android:background="@drawable/green_corners_bg"
+            android:textColor="@color/green_text"
+            android:textSize="18dp"
+            android:text="确  定"
+            android:layout_marginTop="@dimen/margin_top_10"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+</LinearLayout>

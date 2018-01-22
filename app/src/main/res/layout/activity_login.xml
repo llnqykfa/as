@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.aixianshengxian.activity.LoginActivity">
+<include layout="@layout/head"></include>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_80"
+        android:layout_gravity="center"
+        android:src="@mipmap/guid"/>
+    <EditText
+        android:id="@+id/edit_phone"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/margin_30"
+        android:layout_marginLeft="@dimen/margin_30"
+        android:layout_marginRight="@dimen/margin_30"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:hint="请输入手机号"
+        android:textSize="15dp"
+        android:inputType="phone"
+    android:background="@drawable/edit_green_bg"/>
+
+    <EditText
+        android:id="@+id/edit_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/margin_20"
+        android:layout_marginLeft="@dimen/margin_30"
+        android:layout_marginRight="@dimen/margin_30"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:hint="请输入密码"
+        android:textSize="15dp"
+        android:inputType="textPassword"
+        android:background="@drawable/edit_green_bg"/>
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/margin_30"
+        android:layout_marginLeft="@dimen/margin_80"
+        android:layout_marginRight="@dimen/margin_80"
+        android:background="@drawable/green_corners_bg"
+        android:gravity="center"
+        android:text="登  录"
+        android:textColor="@color/green_text"
+        android:textSize="18dp"/>
+</LinearLayout>

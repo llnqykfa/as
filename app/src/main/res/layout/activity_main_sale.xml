@@ -26,13 +26,32 @@
             android:layout_height="wrap_content"></android.support.v4.view.ViewPager>
 
     </LinearLayout>
-    <ImageView
-        android:id="@+id/image_add_new"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:src="@mipmap/add"
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="20dp" />
+        android:layout_marginBottom="@dimen/margin_15"
+        android:paddingTop="@dimen/margin_top_5"
+        android:paddingBottom="@dimen/margin_top_5"
+        android:paddingLeft="@dimen/margin_top_10"
+        android:background="@drawable/corners_bg3">
+        <ImageView
+            android:id="@+id/iv_narrow"
+            android:layout_width="15dp"
+            android:layout_height="55dp"
+            android:layout_marginRight="@dimen/margin_top_5"
+            android:layout_gravity="center"
+            android:src="@mipmap/back"
+            />
+        <ImageView
+            android:id="@+id/image_add_new"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="@dimen/margin_15"
+            android:layout_gravity="center"
+            android:src="@mipmap/add" />
+    </LinearLayout>
 
 </RelativeLayout>

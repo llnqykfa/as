@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="35dp"
+    android:gravity="center_vertical">
+    <LinearLayout
+        android:id="@+id/lineDeliver"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_bill_number"
+            android:layout_width="0dp"
+            android:layout_weight="2.5"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
+            android:textSize="15dp"
+            android:layout_marginLeft="6dp"
+            android:text="12345667899"/>
+        <TextView
+            android:id="@+id/tv_transport_bill_state"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textColor="@color/green_text"
+            android:textSize="@dimen/text_size_13"
+            android:text="配送中"/>
+        <TextView
+            android:id="@+id/tv_delivery_time"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_text2"
+            android:textSize="15dp"
+            android:text="2017-05-16 08:15"/>
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@mipmap/forword"
+            android:layout_marginRight="6dp"/>
+    </LinearLayout>
+
+</LinearLayout>

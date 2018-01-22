@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_personal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_sitetype_normal"
+    tools:context="com.aixianshengxian.activity.PersonalActivity">
+
+    <include layout="@layout/head"></include>
+
+    <Button
+        android:id="@+id/btn_login_quit"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="@dimen/margin_top_5"
+        android:layout_marginRight="@dimen/margin_top_5"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:background="@drawable/edit_bg"
+        android:text="注  销"
+        android:textColor="@color/green_text"
+        android:textSize="18dp"
+        />
+
+</LinearLayout>

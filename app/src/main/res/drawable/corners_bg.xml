@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 通用圆角布局  背景白色  边框灰色--> 
+<shape xmlns:android="http://schemas.android.com/apk/res/android">  
+    <solid android:color="#ffffff" />
+    <stroke android:color="#3f888888"
+        android:width="1px"/>
+        <corners android:topLeftRadius="8dp"
+                 android:topRightRadius="8dp"
+                 android:bottomRightRadius="8dp"
+                 android:bottomLeftRadius="8dp"/>
+
+</shape>

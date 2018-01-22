@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aixianshengxian.R;
-import com.xmzynt.storm.mdata.service.user.supplier.Supplier;
-import com.xmzynt.storm.service.wms.warehouse.Warehouse;
+import com.xmzynt.storm.basic.idname.IdName;
 
 import java.util.List;
 
@@ -17,13 +16,13 @@ import java.util.List;
  * Created by cwj on 2017/6/6.
  */
 
-public class DepotRefreshAdapter extends RecyclerView.Adapter<DepotRefreshAdapter.ViewHolder>{
+public class OperatorRefreshAdapter extends RecyclerView.Adapter<OperatorRefreshAdapter.ViewHolder>{
     private LayoutInflater mInflater;
-    private List<Warehouse> warehouse = null;
+    private List<IdName> operator = null;
 
     public interface OnItemClickLitener
     {
-        void onItemClick(Warehouse warehouse);
+        void onItemClick(IdName operator);
     }
 
     private OnItemClickLitener mOnItemClickLitener;
@@ -33,9 +32,9 @@ public class DepotRefreshAdapter extends RecyclerView.Adapter<DepotRefreshAdapte
         this.mOnItemClickLitener = mOnItemClickLitener;
     }
 
-    public DepotRefreshAdapter(Context context, List<Warehouse> warehouse) {
+    public OperatorRefreshAdapter(Context context, List<IdName> operator) {
         this.mInflater = LayoutInflater.from(context);
-        this.warehouse = warehouse;
+        this.operator = operator;
     }
 
     @Override
@@ -43,21 +42,21 @@ public class DepotRefreshAdapter extends RecyclerView.Adapter<DepotRefreshAdapte
         final View view=mInflater.inflate(R.layout.item_client,parent,false);
         //这边可以做一些属性设置，甚至事件监听绑定
         //view.setBackgroundColor(Color.RED);
-        DepotRefreshAdapter.ViewHolder viewHolder=new DepotRefreshAdapter.ViewHolder(view);
+        OperatorRefreshAdapter.ViewHolder viewHolder=new OperatorRefreshAdapter.ViewHolder(view);
 
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder( final ViewHolder holder,final int position) {
-        holder.tv_client_name.setText("" + warehouse.get(position).getName());
+        holder.tv_client_name.setText("" + operator.get(position).getName());
         holder.itemView.setTag(position);
         if(mOnItemClickLitener != null){
             holder.tv_client_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int pos = holder.getLayoutPosition();
-                    mOnItemClickLitener.onItemClick(warehouse.get(pos));
+                    mOnItemClickLitener.onItemClick(operator.get(pos));
                 }
             });
         }else {
@@ -65,7 +64,7 @@ public class DepotRefreshAdapter extends RecyclerView.Adapter<DepotRefreshAdapte
                 @Override
                 public void onClick(View view) {
                     int pos = holder.getLayoutPosition();
-                    mOnItemClickLitener.onItemClick(warehouse.get(pos));
+                    mOnItemClickLitener.onItemClick(operator.get(pos));
                 }
             });
         }
@@ -73,8 +72,8 @@ public class DepotRefreshAdapter extends RecyclerView.Adapter<DepotRefreshAdapte
 
     @Override
     public int getItemCount() {
-        if(warehouse != null) {
-            return warehouse.size();
+        if(operator != null) {
+            return operator.size();
         }
             return 0;
     }
@@ -91,16 +90,16 @@ public class DepotRefreshAdapter extends RecyclerView.Adapter<DepotRefreshAdapte
     }
 
     //添加数据
-    public void addItem(List<Warehouse> newDatas) {
+    public void addItem(List<IdName> newDatas) {
 
-        newDatas.addAll(warehouse);
-        warehouse.removeAll(warehouse);
-        warehouse.addAll(newDatas);
+        newDatas.addAll(operator);
+        operator.removeAll(operator);
+        operator.addAll(newDatas);
         notifyDataSetChanged();
     }
 
-    public void addMoreItem(List<Warehouse> newDatas) {
-        warehouse.addAll(newDatas);
+    public void addMoreItem(List<IdName> newDatas) {
+        operator.addAll(newDatas);
         notifyDataSetChanged();
     }
 }

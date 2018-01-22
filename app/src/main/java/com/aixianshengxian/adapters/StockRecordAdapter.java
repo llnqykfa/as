@@ -9,59 +9,62 @@ import android.widget.TextView;
 
 import com.aixianshengxian.R;
 import com.aixianshengxian.util.DatesUtils;
+import com.aixianshengxian.util.PurchaseBillUtil;
 import com.xmzynt.storm.service.purchase.bill.PurchaseBill;
+import com.xmzynt.storm.service.wms.stock.Stock;
 
-import java.util.List;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/10/13.
  */
 
-public class PurchaseRefreshAdapter extends RecyclerView.Adapter<PurchaseRefreshAdapter.ViewHolder> {
-    private List<PurchaseBill> mData;
+public class StockRecordAdapter extends RecyclerView.Adapter<StockRecordAdapter.ViewHolder> {
+    private List<Stock> mStock;
     private OnItemClickListener mOnItemClickListener;
     private Context context;
     private LayoutInflater inflater = null;
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_provider;
-        TextView tv_purchase_ucode;
-        TextView tv_purchase_time;
-        TextView tv_purchase_state;
+        TextView tv_product_name;
+        TextView tv_stock_num;
+        TextView tv_unit;
+        TextView tv_associated;
         View myView;
 
         public ViewHolder(View view){//自定义内部类，继承自RecyclerView.ViewHolder
             super(view);
-            tv_provider = (TextView) view.findViewById(R.id.tv_provider);
-            tv_purchase_ucode = (TextView) view.findViewById(R.id.tv_purchase_ucode);
-            tv_purchase_time = (TextView) view.findViewById(R.id.tv_purchase_time);
-            tv_purchase_state = (TextView) view.findViewById(R.id.tv_purchase_state);
+            tv_product_name = (TextView) view.findViewById(R.id.tv_product_name);
+            tv_stock_num = (TextView) view.findViewById(R.id.tv_stock_num);
+            tv_unit = (TextView) view.findViewById(R.id.tv_unit);
+            tv_associated = (TextView) view.findViewById(R.id.tv_associated);
             myView=view;//定义一个包括图片和文字的布局
         }
     }
 
-    public PurchaseRefreshAdapter(List<PurchaseBill> MData,Context context) {
-        this.mData = MData;
+    public StockRecordAdapter(List<Stock> MData,Context context) {
+        this.mStock = MData;
         this.context = context;
         inflater = LayoutInflater.from(context);
     }
 
     //定义一个监听接口，里面有方法
     public interface OnItemClickListener{
-        void onItemClick(PurchaseBill purchaseBill);
+        void onItemClick(Stock stock);
     }
 
     //给监听设置一个构造函数，用于main中调用
-    public void setOnItemListener(PurchaseRefreshAdapter.OnItemClickListener mOnItemClickListener) {
+    public void setOnItemListener(StockRecordAdapter.OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
     @Override
-    public PurchaseRefreshAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
+    public StockRecordAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
         final View view= LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_list_purchase,parent,false);//传入布局
-        final PurchaseRefreshAdapter.ViewHolder holder = new ViewHolder(view);
+                .inflate(R.layout.item_list_search_stock_record,parent,false);//传入布局
+        final StockRecordAdapter.ViewHolder holder = new ViewHolder(view);
 
         if (mOnItemClickListener!=null) {
             //整体监听
@@ -69,7 +72,7 @@ public class PurchaseRefreshAdapter extends RecyclerView.Adapter<PurchaseRefresh
                 @Override
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();//获取点击位置
-                    mOnItemClickListener.onItemClick(mData.get(position));
+                    mOnItemClickListener.onItemClick(mStock.get(position));
                 }
             });
         }
@@ -77,36 +80,69 @@ public class PurchaseRefreshAdapter extends RecyclerView.Adapter<PurchaseRefresh
     }
 
     @Override
-    public void onBindViewHolder(PurchaseRefreshAdapter.ViewHolder holder, int position) {
-        final PurchaseBill purchaseBill = mData.get(position);
-        holder.tv_provider.setText(purchaseBill.getSupplier() == null?"":purchaseBill.getSupplier().getName());
-        holder.tv_purchase_ucode.setText(purchaseBill.getBillNumber());
-        Date purchaseTime = purchaseBill.getDeliveryTime();
-        holder.tv_purchase_time.setText(String.valueOf(DatesUtils.dateToStr(purchaseTime)));
-        holder.tv_purchase_state.setText(purchaseBill.getStatus().getCaption());
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        final Stock stock = mStock.get(position);
+        String uuid = stock .getGoods().getCode();
+        String name = stock.getGoods().getName();
+        String spec =  stock.getGoodsSpec()==null?null:stock.getGoodsSpec();
+
+        if (spec != null) {
+            Map<String, Object> valueMap = PurchaseBillUtil.getMap(spec);
+            if (spec.equals("{}")) {
+                holder.tv_product_name.setText(uuid + " " + name);//商品名称
+            } else {
+                holder.tv_product_name.setText(uuid + " " + name + "  " + valueMap.keySet() + valueMap.values());//商品名称
+            }
+        } else {
+            holder.tv_product_name.setText(uuid + " " + name);//商品名称
+        }
+
+        holder.tv_stock_num.setText(String.valueOf(stock.getAmount()));//库存数
+        holder.tv_unit.setText(stock.getGoodsUnit().getName());//单位
+
+        if (stock.getBasketCodes() != null) {
+            List<String> associatedBasket = stock.getBasketCodes();
+            showAssociatedBasket(associatedBasket,holder);
+        } else {
+            holder.tv_associated.setText("没有关联周转箱");
+        }
+
+    }
+
+    //关联周转箱
+    private void showAssociatedBasket(List<String> associatedBasket, ViewHolder holder) {
+        String basketStr = new String();
+        for (int i = 0;i < associatedBasket.size();i ++) {
+            if (i == associatedBasket.size() - 1) {
+                basketStr = basketStr + associatedBasket.get(i);
+            } else {
+                basketStr = basketStr + associatedBasket.get(i) + ",";
+            }
+        }
+        holder.tv_associated.setText(basketStr);
     }
 
     @Override
     public int getItemCount() {
-        return mData == null ? 0 : mData.size();
+        return mStock == null ? 0 : mStock.size();
     }
 
     //添加数据
-    public void addItem(List<PurchaseBill> newDatas) {
+    public void addItem(List<Stock> newDatas) {
 
 //        newDatas.addAll(mData);
 //        mData.removeAll(mData);
-        mData.clear();
-        mData.addAll(newDatas);
+        mStock.clear();
+        mStock.addAll(newDatas);
 //        notifyDataSetChanged();
     }
 
-    public void addMoreItem(List<PurchaseBill> newDatas) {
-        mData.addAll(newDatas);
+    public void addMoreItem(List<Stock> newDatas) {
+        mStock.addAll(newDatas);
 //        notifyDataSetChanged();
     }
 
-    public List<PurchaseBill> getData() {
-        return mData;
+    public List<Stock> getData() {
+        return mStock;
     }
 }

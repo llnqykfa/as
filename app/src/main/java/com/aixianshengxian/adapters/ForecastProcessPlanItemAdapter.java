@@ -1,7 +1,6 @@
 package com.aixianshengxian.adapters;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -14,13 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aixianshengxian.activity.machine.StockInActivity;
-import com.aixianshengxian.activity.purchase.AddPurchaseActivity;
-import com.aixianshengxian.module.ForecastProcessPlanItem;
-import com.aixianshengxian.module.ProductStockIn;
 import com.aixianshengxian.R;
-import com.xmzynt.storm.service.process.ForecastProcessPlan;
-import com.xmzynt.storm.service.wms.stockin.StockInRecord;
+import com.aixianshengxian.activity.machine.StockInActivity;
+import com.aixianshengxian.module.ForecastProcessPlanItem;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,7 +24,7 @@ import java.util.List;
  * Created by Administrator on 2017/10/25.
  */
 
-public class ProductStockInAdapter extends RecyclerView.Adapter<ProductStockInAdapter.ViewHolder> {
+public class ForecastProcessPlanItemAdapter extends RecyclerView.Adapter<ForecastProcessPlanItemAdapter.ViewHolder> {
     private List<ForecastProcessPlanItem> mForecastProcessPlanItems;
     private OnItemClickListener mOnItemClickListener;
     private Context context;
@@ -56,7 +51,7 @@ public class ProductStockInAdapter extends RecyclerView.Adapter<ProductStockInAd
         }
     }
 
-    public ProductStockInAdapter(List<ForecastProcessPlanItem> MData, Context context) {
+    public ForecastProcessPlanItemAdapter(List<ForecastProcessPlanItem> MData, Context context) {
         this.mForecastProcessPlanItems = MData;
         this.context = context;
         inflater = LayoutInflater.from(context);
@@ -65,7 +60,7 @@ public class ProductStockInAdapter extends RecyclerView.Adapter<ProductStockInAd
     //定义一个监听接口，里面有方法
     public interface OnItemClickListener{
         void onDeleteClick(int position);
-        void onItemClick(ForecastProcessPlanItem productstockin,int position);
+        void onItemClick(ForecastProcessPlanItem productstockin, int position);
     }
 
     //给监听设置一个构造函数，用于main中调用
@@ -74,7 +69,7 @@ public class ProductStockInAdapter extends RecyclerView.Adapter<ProductStockInAd
     }
 
     @Override
-    public ProductStockInAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ForecastProcessPlanItemAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view= LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_list_add_stock_in,parent,false);//传入布局
         final ViewHolder holder = new ViewHolder(view);
@@ -102,13 +97,13 @@ public class ProductStockInAdapter extends RecyclerView.Adapter<ProductStockInAd
     }
 
     @Override
-    public void onBindViewHolder(ProductStockInAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ForecastProcessPlanItemAdapter.ViewHolder holder, int position) {
         final ForecastProcessPlanItem productstockin = mForecastProcessPlanItems.get(position);
         holder.tv_product_name.setText(productstockin.getForecastProcessPlan().getGoods().getName());//商品名称
 
         //入库数
         //这个很重要，先移开TextWatcher的监听器
-        if (holder.edt_stock_in_num.getTag() instanceof android.text.TextWatcher) {
+        if (holder.edt_stock_in_num.getTag() instanceof TextWatcher) {
             holder.edt_stock_in_num.removeTextChangedListener((TextWatcher) holder.edt_stock_in_num.getTag());
         }
         holder.edt_stock_in_num.setText(String.valueOf(BigDecimal.ZERO));
@@ -139,7 +134,7 @@ public class ProductStockInAdapter extends RecyclerView.Adapter<ProductStockInAd
 
         //入库单价
         //这个很重要，先移开TextWatcher的监听器
-        if (holder.edt_stock_in_price.getTag() instanceof android.text.TextWatcher) {
+        if (holder.edt_stock_in_price.getTag() instanceof TextWatcher) {
             holder.edt_stock_in_price.removeTextChangedListener((TextWatcher) holder.edt_stock_in_price.getTag());
         }
         holder.edt_stock_in_price.setText(String.valueOf(BigDecimal.ZERO));
@@ -165,14 +160,14 @@ public class ProductStockInAdapter extends RecyclerView.Adapter<ProductStockInAd
                 }
             }
         };
-        holder.edt_stock_in_price.addTextChangedListener(watcher1);
+        holder.edt_stock_in_price.addTextChangedListener(watcher2);
         holder.edt_stock_in_price.setTag(watcher2);
 
         holder.tv_unit.setText(productstockin.getForecastProcessPlan().getGoodsUnit().getName());//单位
 
         //保质期
         //这个很重要，先移开TextWatcher的监听器
-        if (holder.edt_stay_day.getTag() instanceof android.text.TextWatcher) {
+        if (holder.edt_stay_day.getTag() instanceof TextWatcher) {
             holder.edt_stay_day.removeTextChangedListener((TextWatcher) holder.edt_stay_day.getTag());
         }
         holder.edt_stay_day.setText(String.valueOf(0));
@@ -192,13 +187,13 @@ public class ProductStockInAdapter extends RecyclerView.Adapter<ProductStockInAd
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s)) {
                     productstockin.setDay(0);
-                    Toast.makeText(StockInActivity.mactivity,"入库数不能为空！",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(StockInActivity.mactivity,"保质期不能为空！",Toast.LENGTH_SHORT).show();
                 } else {
                     productstockin.setDay(Integer.parseInt(s.toString()));
                 }
             }
         };
-        holder.edt_stay_day.addTextChangedListener(watcher1);
+        holder.edt_stay_day.addTextChangedListener(watcher3);
         holder.edt_stay_day.setTag(watcher3);
     }
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 版权所有©，2015，厦门走云网络科技有限公司，保留所有权利。 -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:META-INF/mdata-api/system-constants.properties
+				</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="com.xmzynt.storm.common.api.SystemConstants">
+		<property name="accessKeyId" value="${common-api.oss.accessKeyId}" />
+		<property name="accessKeySecret" value="${common-api.oss.accessKeySecret}" />
+		<property name="endPoint" value="${common-api.oss.endPoint}" />
+		<property name="bucketName" value="${common-api.oss.bucketName}" />
+		<property name="pathHeader" value="${common-api.oss.pathHeader}" />
+		<property name="productionMode" value="${common-api.productionMode}" />
+		<property name="loginUrl" value="${common-api.loginUrl}" />
+	</bean>
+</beans>

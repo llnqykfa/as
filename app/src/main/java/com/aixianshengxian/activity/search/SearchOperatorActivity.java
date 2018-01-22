@@ -1,5 +1,6 @@
 package com.aixianshengxian.activity.search;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,20 +21,20 @@ import android.widget.TextView;
 import com.aixianshengxian.BaseActivity;
 import com.aixianshengxian.R;
 import com.aixianshengxian.adapters.DepotRefreshAdapter;
+import com.aixianshengxian.adapters.OperatorRefreshAdapter;
 import com.aixianshengxian.constant.DataConstant;
 import com.aixianshengxian.constant.UrlConstants;
 import com.aixianshengxian.entity.ResponseBean;
 import com.aixianshengxian.util.JsonUtil;
 import com.aixianshengxian.util.SessionUtils;
 import com.google.gson.reflect.TypeToken;
+import com.xmzynt.storm.basic.BasicConstants;
+import com.xmzynt.storm.basic.idname.IdName;
 import com.xmzynt.storm.basic.user.UserIdentity;
+import com.xmzynt.storm.basic.user.UserType;
 import com.xmzynt.storm.common.Platform;
-import com.xmzynt.storm.common.api.util.GsonUtil;
-import com.xmzynt.storm.common.api.util.query.QueryFilter;
-import com.xmzynt.storm.mdata.service.common.MDataConstants;
-import com.xmzynt.storm.mdata.service.cooperation.mccst.MerchantCustomer;
-import com.xmzynt.storm.sale.service.common.SaleConstants;
-import com.xmzynt.storm.service.wms.warehouse.Warehouse;
+import com.xmzynt.storm.util.GsonUtil;
+import com.xmzynt.storm.util.query.QueryFilter;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -46,11 +47,11 @@ import java.util.List;
 
 import okhttp3.Call;
 
-public class SearchDepotActivity extends BaseActivity {
+public class SearchOperatorActivity extends BaseActivity {
 
     private static  final String TAG = "SearchDepotActivity";
 
-    private final int SEARCH_DEPOT_RESULT = 10;
+    private final int SEARCH_OPERATOR_RESULT = 12;
     private TextView tv_add_temp;
     private ImageView image_search;
     private ImageView image_personal;
@@ -60,11 +61,13 @@ public class SearchDepotActivity extends BaseActivity {
     private ImageView image_close_search;
     private RecyclerView recylerView_goods_list;
     private SwipeRefreshLayout swipe_refresh_widget;
-    private DepotRefreshAdapter adapter;
+    private OperatorRefreshAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private int lastVisibleItem;
-    private List<Warehouse> mAllList;
-    private List<Warehouse> mDataList =new ArrayList<>();
+    private List<IdName> mAllList;
+    private List<IdName> mDataList =new ArrayList<>();
+
+    private ProgressDialog progressBar;
 
     private int page = 1 ;
     private int index =0 ;
@@ -75,6 +78,7 @@ public class SearchDepotActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_client);
+        setProgressBar();
         getClientList();
         initViews();
         initHrvsr();
@@ -120,10 +124,10 @@ public class SearchDepotActivity extends BaseActivity {
                 if(s != null && !TextUtils.isEmpty(s)){
                     mDataList.clear();
                     if(mAllList != null && mAllList.size()>0){
-                        for(Warehouse warehouse : mAllList){
-                            String name = warehouse.getName();
+                        for(IdName operator : mAllList){
+                            String name = operator.getName();
                             if(name.contains(s)){
-                                mDataList.add(warehouse);
+                                mDataList.add(operator);
                             }
                         }
                     }
@@ -136,8 +140,15 @@ public class SearchDepotActivity extends BaseActivity {
 
     }
 
+    private void setProgressBar() {
+        progressBar = new ProgressDialog(this);
+        progressBar.setCancelable(true);
+        progressBar.setMessage("正在请求数据 ...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    }
+
     private void setData(){
-        tv_head_title.setText("查找仓库");
+        tv_head_title.setText("查找操作员");
     }
 
     private void initHrvsr(){
@@ -153,18 +164,18 @@ public class SearchDepotActivity extends BaseActivity {
         linearLayoutManager=new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         recylerView_goods_list.setLayoutManager(linearLayoutManager);
-        adapter = new DepotRefreshAdapter(getApplicationContext(),mDataList);//记住要获取供应商的数据
+        adapter = new OperatorRefreshAdapter(getApplicationContext(),mDataList);//记住要获取供应商的数据
         recylerView_goods_list.setAdapter(adapter);
 
-        adapter.setOnItemClickLitener(new DepotRefreshAdapter.OnItemClickLitener() {
+        adapter.setOnItemClickLitener(new OperatorRefreshAdapter.OnItemClickLitener() {
             @Override
-            public void onItemClick(Warehouse warehouse) {
+            public void onItemClick(IdName operator) {
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("depot",warehouse);//放进数据流中
+                bundle.putSerializable("operator",operator);//放进数据流中
 
                 intent.putExtras(bundle);
-                setResult(SEARCH_DEPOT_RESULT,intent);
+                setResult(SEARCH_OPERATOR_RESULT,intent);
                 finish();
                 //  getDepartment(merchantCustomer);
             }
@@ -176,7 +187,7 @@ public class SearchDepotActivity extends BaseActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        List<MerchantCustomer> newDatas = new ArrayList<MerchantCustomer>();
+                        List<IdName> newDatas = new ArrayList<IdName>();
                         index = 0;
                         page = 1;
                         mDataList.clear();
@@ -190,7 +201,7 @@ public class SearchDepotActivity extends BaseActivity {
                         adapter.notifyDataSetChanged();
 //                        adapter.addItem(newDatas);
                         swipe_refresh_widget.setRefreshing(false);
-                        showShortToast("更新了20条数据");
+                        showShortToast("数据刷新");
                     }
                 }, 1500);
             }
@@ -204,7 +215,7 @@ public class SearchDepotActivity extends BaseActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            List<Warehouse> newDatas = new ArrayList<Warehouse>();
+                            List<IdName> newDatas = new ArrayList<IdName>();
                             if(mAllList!= null && mAllList.size()>= index && index>= 0){
                                 for(int i = index-1 ;i < mAllList.size() ; i ++){
                                     newDatas.add(mAllList.get(i));
@@ -241,22 +252,26 @@ public class SearchDepotActivity extends BaseActivity {
             filter.setPage(pageNo);
             filter.setPageSize(pageSize);
             filter.setDefaultPageSize(0);
+            filter.getParams().put(DataConstant.USERTYPR, UserType.employee);
             //filter.setParams((Map<String, Object>) params);
             try {
-                reparams.put(MDataConstants.URL_BODY, body);
-                body.put(SaleConstants.Field.QUERY_FILTER, GsonUtil.getGson().toJson(filter));
+                reparams.put(BasicConstants.URL_BODY, body);
+                body.put(BasicConstants.Field.QUERY_FILTER, GsonUtil.getGson().toJson(filter));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            reparams.put(MDataConstants.URL_PLATFORM, Platform.android.name());
-            reparams.put(MDataConstants.Field.USER_IDENTITY, UserIdentity.merchant.name());
+            reparams.put(BasicConstants.URL_PLATFORM, Platform.android.name());
+            reparams.put(BasicConstants.Field.USER_IDENTITY, UserIdentity.merchant.name());
             reparams.put(DataConstant.SESSIONID, sessionId);
-            reparams.put(MDataConstants.Field.USER_UUID, userUuid);
-            reparams.put(MDataConstants.Field.USER_NAME, userName);
+            reparams.put(BasicConstants.Field.USER_UUID, userUuid);
+            reparams.put(BasicConstants.Field.USER_NAME, userName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        OkHttpUtils.postString().url(UrlConstants.URL_SEARCH_DEPOT)
+
+        progressBar.show();
+
+        OkHttpUtils.postString().url(UrlConstants.URL_PURCHASE_GET_DROPDOWN_OPERATOR)
                 .addHeader("Cookie", "PHPSESSID=" + 123456)
                 .addHeader("X-Requested-With", "XMLHttpRequest")
                 .addHeader("Content-Type", "application/json;chartset=utf-8")
@@ -265,6 +280,12 @@ public class SearchDepotActivity extends BaseActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int i) {
+                        if (progressBar != null) {
+                            if (progressBar.isShowing()) {
+                                progressBar.dismiss();
+                                progressBar.cancel();
+                            }
+                        }
                         showCustomToast("请求失败");
                     }
 
@@ -272,7 +293,7 @@ public class SearchDepotActivity extends BaseActivity {
                     public void onResponse(String s, int i) {
                         ResponseBean res = GsonUtil.getGson().fromJson(s,ResponseBean.class);
                         if(res.getErrorCode() == 0){
-                            Type listTypeA = new TypeToken<List<Warehouse>>() {}.getType();
+                            Type listTypeA = new TypeToken<List<IdName>>() {}.getType();
                             mAllList = GsonUtil.getGson().fromJson(res.getData(),listTypeA);
                             if(mAllList != null && mAllList.size()>0 && mAllList.size()>index){
                                 if(mAllList.size()>index+20){
@@ -293,6 +314,12 @@ public class SearchDepotActivity extends BaseActivity {
                             adapter.notifyDataSetChanged();
                             //showShortToast("请求成功");
                             showLogDebug("depot",res.getData());
+                            if (progressBar != null) {
+                                if (progressBar.isShowing()) {
+                                    progressBar.dismiss();
+                                    progressBar.cancel();
+                                }
+                            }
                         }else {
                             showCustomToast(res.getMessage());
                         }

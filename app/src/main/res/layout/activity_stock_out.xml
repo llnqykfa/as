@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_stock_out"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.aixianshengxian.activity.StockOutActivity">
+<include layout="@layout/head"></include>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:background="@color/background_dark"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:layout_marginLeft="6dp"
+            android:text="出库仓库"
+            android:textSize="16dp"/>
+        <LinearLayout
+            android:id="@+id/line_search"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="40dp"
+            android:background="@drawable/corners_bg"
+            android:orientation="horizontal"
+
+            android:layout_marginRight="6dp"
+            android:gravity="center_vertical">
+
+            <TextView
+               android:id="@+id/tv_search_content"
+               android:layout_width="0dp"
+               android:layout_weight="1"
+               android:layout_height="match_parent"
+               android:background="@null"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:layout_marginLeft="12dp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/down_select"
+                android:layout_marginRight="10dp"/>
+        </LinearLayout>
+        </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recylerView_goods_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+   <Button
+       android:id="@+id/btn_check_stock_out"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+       android:background="@color/text_color_line_normal"
+       android:textColor="@color/white"
+       android:text="确定"/>
+</LinearLayout>

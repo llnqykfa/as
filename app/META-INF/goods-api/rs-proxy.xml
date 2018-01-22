@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 版权所有©，2015，厦门走云网络科技有限公司，保留所有权利。 -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs" xmlns:http="http://cxf.apache.org/transports/http/configuration" xmlns:sec="http://cxf.apache.org/configuration/security"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://cxf.apache.org/jaxrs
+    http://cxf.apache.org/schemas/jaxrs.xsd
+    http://cxf.apache.org/transports/http/configuration
+    http://cxf.apache.org/schemas/configuration/http-conf.xsd
+    http://cxf.apache.org/configuration/security
+    http://cxf.apache.org/schemas/configuration/security.xsd">
+
+	<bean id="goods-server.annotationIntrospector" class="org.codehaus.jackson.map.AnnotationIntrospector.Pair">
+		<constructor-arg>
+			<bean class="org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector" />
+		</constructor-arg>
+		<constructor-arg>
+			<bean class="org.codehaus.jackson.xc.JaxbAnnotationIntrospector" />
+		</constructor-arg>
+	</bean>
+	<bean id="goods-server.jsonDateFormat" class="java.text.SimpleDateFormat">
+		<constructor-arg value="yyyy-MM-dd HH:mm:ss" />
+	</bean>
+	<bean id="goods-server.jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider">
+		<property name="mapper">
+			<bean class="org.codehaus.jackson.map.ObjectMapper">
+				<property name="serializationConfig.dateFormat" ref="goods-server.jsonDateFormat" />
+				<property name="serializationConfig.annotationIntrospector" ref="goods-server.annotationIntrospector" />
+				<property name="deserializationConfig.dateFormat" ref="goods-server.jsonDateFormat" />
+				<property name="deserializationConfig.annotationIntrospector" ref="goods-server.annotationIntrospector" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- FormulaService -->
+	<jaxrs:client id="goods-api.FormulaService" address="${goods-server.server.url:http://localhost:8078/goods-server/goodsRest}"
+		serviceClass="com.xmzynt.storm.goods.service.formula.FormulaService">
+		<jaxrs:providers>
+			<ref bean="goods-server.jsonProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!-- GoodsService -->
+	<jaxrs:client id="goods-api.GoodsService" address="${goods-server.server.url:http://localhost:8078/goods-server/goodsRest}"
+		serviceClass="com.xmzynt.storm.goods.service.goods.GoodsService">
+		<jaxrs:providers>
+			<ref bean="goods-server.jsonProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!-- GoodsCategoryService -->
+	<jaxrs:client id="goods-api.GoodsCategoryService" address="${goods-server.server.url:http://localhost:8078/goods-server/goodsRest}"
+		serviceClass="com.xmzynt.storm.goods.service.category.GoodsCategoryService">
+		<jaxrs:providers>
+			<ref bean="goods-server.jsonProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!-- LogService -->
+	<jaxrs:client id="goods-api.LogService" address="${goods-server.server.url:http://localhost:8078/goods-server/goodsRest}"
+		serviceClass="com.xmzynt.storm.goods.service.log.LogService">
+		<jaxrs:providers>
+			<ref bean="goods-server.jsonProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!-- SalesCatalogService -->
+	<jaxrs:client id="goods-api.SalesCatalogService" address="${goods-server.server.url:http://localhost:8078/goods-server/goodsRest}"
+		serviceClass="com.xmzynt.storm.goods.service.salescatalog.SalesCatalogService">
+		<jaxrs:providers>
+			<ref bean="goods-server.jsonProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+
+	<!-- GoodsUnitService -->
+	<jaxrs:client id="goods-api.GoodsUnitService" address="${goods-server.server.url:http://localhost:8078/goods-server/goodsRest}"
+		serviceClass="com.xmzynt.storm.goods.service.unit.GoodsUnitService">
+		<jaxrs:providers>
+			<ref bean="goods-server.jsonProvider" />
+		</jaxrs:providers>
+	</jaxrs:client>
+</beans>

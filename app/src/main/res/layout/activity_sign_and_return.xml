@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_sign_and_return"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.aixianshengxian.activity.SignAndReturnActivity">
+
+    <Button
+        android:id="@+id/btn_check_sign"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:background="@color/text_color_line_normal"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:textSize="18dp"
+        android:text="确定"/>
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:layout_below="@id/line_head"
+       android:layout_above="@id/btn_check_sign">
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:orientation="vertical">
+           <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent">
+               <android.support.v7.widget.RecyclerView
+                   android:id="@+id/recylerView_goods_list"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent">
+               </android.support.v7.widget.RecyclerView>
+           </RelativeLayout>
+
+
+           <EditText
+               android:id="@+id/edit_sign_mark"
+               android:layout_width="match_parent"
+               android:layout_height="50dp"
+               android:layout_marginLeft="12dp"
+               android:layout_marginRight="12dp"
+               android:layout_marginTop="20dp"
+               android:background="@drawable/corners_bg"
+               android:gravity="center_vertical|left"
+               android:hint="签收备注"
+               android:paddingLeft="15dp"/>
+           <EditText
+               android:id="@+id/edit_return_remark"
+               android:layout_width="match_parent"
+               android:layout_height="50dp"
+               android:layout_marginLeft="12dp"
+               android:layout_marginRight="12dp"
+               android:layout_marginTop="10dp"
+               android:gravity="center_vertical|left"
+               android:hint="退货备注"
+               android:paddingLeft="15dp"
+               android:background="@drawable/corners_bg"/>
+       </LinearLayout>
+   </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/line_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <include layout="@layout/head"></include>
+    </LinearLayout>
+
+
+</RelativeLayout>

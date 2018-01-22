@@ -8,8 +8,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,12 +15,8 @@ import android.widget.Toast;
 
 import com.aixianshengxian.R;
 import com.aixianshengxian.activity.machine.StockInActivity;
-import com.aixianshengxian.module.ProductReceive;
 import com.aixianshengxian.module.StockOutRecordConsume;
 import com.aixianshengxian.util.DatesUtils;
-import com.xmzynt.storm.service.goods.Goods;
-import com.xmzynt.storm.service.wms.MaterialsTree;
-import com.xmzynt.storm.service.wms.stockout.StockOutRecord;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -32,8 +26,8 @@ import java.util.List;
  * Created by Administrator on 2017/10/27.
  */
 
-public class StockInReceiveAdapter extends RecyclerView.Adapter<StockInReceiveAdapter.ViewHolder> {
-    private List<StockOutRecordConsume> mStockOutRecord;
+public class StockOutRecordConsumeAdapter extends RecyclerView.Adapter<StockOutRecordConsumeAdapter.ViewHolder> {
+    private List<StockOutRecordConsume> mStockOutRecordConsumes;
     private OnItemClickListener mOnItemClickListener;
     private Context context;
     private LayoutInflater inflater = null;
@@ -41,7 +35,7 @@ public class StockInReceiveAdapter extends RecyclerView.Adapter<StockInReceiveAd
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_product_name;
         TextView tv_unit_price;
-        TextView tv_unit;
+        TextView tv_unit1,tv_unit2;
         TextView tv_receive_num;
         TextView tv_consume_num;
         EditText edt_present_consume;
@@ -53,7 +47,8 @@ public class StockInReceiveAdapter extends RecyclerView.Adapter<StockInReceiveAd
             super(view);
             tv_product_name = (TextView) view.findViewById(R.id.tv_product_name);
             tv_unit_price = (TextView) view.findViewById(R.id.tv_unit_price);
-            tv_unit = (TextView) view.findViewById(R.id.tv_unit);
+            tv_unit1 = (TextView) view.findViewById(R.id.tv_unit1);
+            tv_unit2 = (TextView) view.findViewById(R.id.tv_unit2);
             tv_receive_num = (TextView) view.findViewById(R.id.tv_receive_num);
             tv_consume_num = (TextView) view.findViewById(R.id.tv_consume_num);
             edt_present_consume = (EditText) view.findViewById(R.id.edt_present_consume);
@@ -63,8 +58,8 @@ public class StockInReceiveAdapter extends RecyclerView.Adapter<StockInReceiveAd
         }
     }
 
-    public StockInReceiveAdapter(List<StockOutRecordConsume> mStockOutRecord, Context context) {
-        this.mStockOutRecord = mStockOutRecord;
+    public StockOutRecordConsumeAdapter(List<StockOutRecordConsume> StockOutRecordConsumes, Context context) {
+        this.mStockOutRecordConsumes = StockOutRecordConsumes;
         this.context = context;
         inflater = LayoutInflater.from(context);
     }
@@ -75,15 +70,15 @@ public class StockInReceiveAdapter extends RecyclerView.Adapter<StockInReceiveAd
     }
 
     //给监听设置一个构造函数，用于main中调用
-    public void setOnItemListener(StockInReceiveAdapter.OnItemClickListener mOnItemClickListener) {
+    public void setOnItemListener(StockOutRecordConsumeAdapter.OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
     @Override
-    public StockInReceiveAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StockOutRecordConsumeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view= LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_list_machine_receive,parent,false);//传入布局
-        final StockInReceiveAdapter.ViewHolder holder = new StockInReceiveAdapter.ViewHolder(view);
+        final StockOutRecordConsumeAdapter.ViewHolder holder = new StockOutRecordConsumeAdapter.ViewHolder(view);
 
         //删除按钮监听
         holder.iv_delete.setOnClickListener(new View.OnClickListener() {
@@ -98,12 +93,13 @@ public class StockInReceiveAdapter extends RecyclerView.Adapter<StockInReceiveAd
     }
 
     @Override
-    public void onBindViewHolder(StockInReceiveAdapter.ViewHolder holder, int position) {
-        final StockOutRecordConsume stockInReceive = mStockOutRecord.get(position);
-        holder.tv_product_name.setText(stockInReceive.getStockOutRecord().getGoods().getName());//商品名称
-        holder.tv_unit.setText(stockInReceive.getStockOutRecord().getGoodsUnit().getName());//单位
-        holder.tv_receive_num.setText(String.valueOf(stockInReceive.getStockOutRecord().getQuantity()));//领用量
-        BigDecimal consumeNum = stockInReceive.getStockOutRecord().getQuantity().subtract(stockInReceive.getStockOutRecord().getRemainderQty());//消耗量
+    public void onBindViewHolder(StockOutRecordConsumeAdapter.ViewHolder holder, int position) {
+        final StockOutRecordConsume stockOutRecordConsume = mStockOutRecordConsumes.get(position);
+        holder.tv_product_name.setText(stockOutRecordConsume.getStockOutRecord().getGoods().getName());//商品名称
+        holder.tv_unit1.setText(stockOutRecordConsume.getStockOutRecord().getGoodsUnit().getName());//单位
+        holder.tv_unit2.setText(stockOutRecordConsume.getStockOutRecord().getGoodsUnit().getName());//单位
+        holder.tv_receive_num.setText(String.valueOf(stockOutRecordConsume.getStockOutRecord().getQuantity()));//领用量
+        BigDecimal consumeNum = stockOutRecordConsume.getStockOutRecord().getQuantity().subtract(stockOutRecordConsume.getStockOutRecord().getRemainderQty());//消耗量
         holder.tv_consume_num.setText(String.valueOf(consumeNum));//消耗量
 
         //这个很重要，先移开TextWatcher的监听器
@@ -126,36 +122,43 @@ public class StockInReceiveAdapter extends RecyclerView.Adapter<StockInReceiveAd
             @Override
             public void afterTextChanged(Editable s) {
                 if (TextUtils.isEmpty(s)) {
-                    stockInReceive.setConsume(BigDecimal.valueOf(0));
+                    stockOutRecordConsume.setConsume(BigDecimal.valueOf(0));
                     Toast.makeText(StockInActivity.mactivity,"消耗数量不能为空",Toast.LENGTH_SHORT).show();
                 } else {
-                    stockInReceive.setConsume(BigDecimal.valueOf(Double.parseDouble(s.toString())));
+                    stockOutRecordConsume.setConsume(BigDecimal.valueOf(Double.parseDouble(s.toString())));
                 }
             }
         };
         holder.edt_present_consume.addTextChangedListener(watcher);
         holder.edt_present_consume.setTag(watcher);
 
-        Date receivetime = stockInReceive.getStockOutRecord().getDeliveryTime();//先获得String类型
-        holder.tv_receive_time.setText(String.valueOf(DatesUtils.dateToStrLong(receivetime)));
+        if(stockOutRecordConsume.getStockOutRecord().getDeliveryTime()!=null){
+            holder.tv_receive_time.setText(DatesUtils.dateToStr(stockOutRecordConsume.getStockOutRecord().getDeliveryTime()));
+        }else{
+            holder.tv_receive_time.setText("");
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mStockOutRecord == null ? 0 : mStockOutRecord.size();
+        return mStockOutRecordConsumes == null ? 0 : mStockOutRecordConsumes.size();
     }
 
     //添加数据
     public void addItem(List<StockOutRecordConsume> newDatas) {
 
-        newDatas.addAll(mStockOutRecord);
-        mStockOutRecord.removeAll(mStockOutRecord);
-        mStockOutRecord.addAll(newDatas);
+        newDatas.addAll(mStockOutRecordConsumes);
+        mStockOutRecordConsumes.removeAll(mStockOutRecordConsumes);
+        mStockOutRecordConsumes.addAll(newDatas);
         notifyDataSetChanged();
     }
 
     public void addMoreItem(List<StockOutRecordConsume> newDatas) {
-        mStockOutRecord.addAll(newDatas);
+        mStockOutRecordConsumes.addAll(newDatas);
         notifyDataSetChanged();
+    }
+
+    public List<StockOutRecordConsume> getData() {
+        return mStockOutRecordConsumes;
     }
 }

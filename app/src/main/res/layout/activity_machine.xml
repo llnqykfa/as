@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.aixianshengxian.activity.machine.MachineActivity">
+    <LinearLayout
+        android:id="@+id/ll_nomessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="没有符合搜索条件的数据！"
+            android:textColor="@color/gray_text"
+            android:textSize="@dimen/text_size_14" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
+        <include layout="@layout/head"></include>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/green_title"
+            android:orientation="horizontal">
+            <include layout="@layout/new_search_head"></include>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/bg_normal_color">
+            <TextView
+                android:id="@+id/tv_choose_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/margin_20"
+                android:drawableRight="@mipmap/down"
+                android:drawablePadding="@dimen/margin_top_12"
+                android:text="选择时间"
+                android:textColor="@color/gray_text"
+                android:textSize="@dimen/text_size_14" />
+        </RelativeLayout>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_widget"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <com.aixianshengxian.view.RefreshRecyclerView
+                android:id="@+id/listview_machine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:choiceMode="singleChoice" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/margin_15"
+        android:paddingTop="@dimen/margin_top_5"
+        android:paddingBottom="@dimen/margin_top_5"
+        android:paddingLeft="@dimen/margin_top_10"
+        android:background="@drawable/corners_bg3">
+        <ImageView
+            android:id="@+id/iv_narrow"
+            android:layout_width="15dp"
+            android:layout_height="55dp"
+            android:layout_marginRight="@dimen/margin_top_5"
+            android:layout_gravity="center"
+            android:src="@mipmap/back"
+            />
+        <ImageView
+            android:id="@+id/image_add_new"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="@dimen/margin_15"
+            android:layout_gravity="center"
+            android:src="@mipmap/add" />
+    </LinearLayout>
+</RelativeLayout>
