@@ -210,20 +210,23 @@ public class SearchProviderActivity extends BaseActivity {
                         index = 0;
                         page = 1;
                         mDataList.clear();
-                        Supplier all = new Supplier();
+                        /*Supplier all = new Supplier();
                         all.setName("全部");
-                        mDataList.add(all);
-                        for (int i = 0; i < 20; i++) {
+                        mDataList.add(all);*/
+                        /*for (int i = 0; i < 20; i++) {
                             mDataList.add(mAllList.get(i));
                             index ++ ;
                             showLogDebug(TAG,"index:"+index);
                             showLogDebug(TAG,"page:"+page);
                             page = index/20;
-                        }
+                        }*/
+
+                        mAllList.clear();
+                        getClientList();
+                        newDatas.addAll(mAllList);
                         adapter.notifyDataSetChanged();
 //                        adapter.addItem(newDatas);
                         swipe_refresh_widget.setRefreshing(false);
-                        showShortToast("数据刷新");
                     }
                 }, 1500);
             }
@@ -238,7 +241,7 @@ public class SearchProviderActivity extends BaseActivity {
                         @Override
                         public void run() {
                             List<Supplier> newDatas = new ArrayList<Supplier>();
-                            if(mAllList!= null && mAllList.size()>= index && index>= 0){
+                            /*if(mAllList!= null && mAllList.size()>= index && index>= 0){
                                 for(int i = index-1 ;i < mAllList.size() ; i ++){
                                     newDatas.add(mAllList.get(i));
                                     index++ ;
@@ -246,7 +249,10 @@ public class SearchProviderActivity extends BaseActivity {
 
                             }else if(mAllList.size() == index){
                                 showCustomToast("全部加载完毕");
-                            }
+                            }*/
+                            mAllList.clear();
+                            getClientList();
+                            newDatas.addAll(mAllList);
                             adapter.addMoreItem(newDatas);
                         }
                     },1000);
@@ -320,7 +326,8 @@ public class SearchProviderActivity extends BaseActivity {
                                 Supplier all = new Supplier();
                                 all.setName("全部");
                                 mDataList.add(all);
-                                if(mAllList.size()>index+20){
+                                mDataList.addAll(mAllList);
+                                /*f(mAllList.size()>index+20){
                                     for(int j = 0 ; j< 20; j ++){
                                         mDataList.add(mAllList.get(index+j));
                                         index ++ ;
@@ -332,8 +339,7 @@ public class SearchProviderActivity extends BaseActivity {
                                         index ++ ;
                                         page = index/20;
                                     }
-                                }
-
+                                }*/
                             }
                             adapter.notifyDataSetChanged();
                             //showShortToast("请求成功");
@@ -344,6 +350,7 @@ public class SearchProviderActivity extends BaseActivity {
                                     progressBar.cancel();
                                 }
                             }
+                            showShortToast("数据刷新");
                         }else {
                             showCustomToast(res.getMessage());
                         }

@@ -303,7 +303,7 @@ public class AddPurchaseActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    //供应商,仓库
+    //供应商，仓库，添加商品，经办人
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

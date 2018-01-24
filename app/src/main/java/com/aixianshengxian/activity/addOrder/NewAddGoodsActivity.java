@@ -71,7 +71,7 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
     private List<Goods> mGoods;//获取得到的商品
     private List<GoodsItem> mAllGoodsItem = new ArrayList<>();//向获得的商品填入未选择的状态
     private List<GoodsItem> mGoodsItem = new ArrayList<>();//界面中根据标签筛选显示的数据
-    final private Map<String,GoodsItem> mCheckedGoodsItem = new HashMap<>();//选中的商品记录
+    private Map<String,GoodsItem> mCheckedGoodsItem = new HashMap<>();//选中的商品记录
     private Map<String,List<GoodsItem>> MapmAllGoodsItem = new HashMap<>();//商品分类存放
     private List<GoodsItem> tempGoodItem = new ArrayList<>();//临时存放分类里的东西
     private List<String> mGoodsBySupplierUuid = new ArrayList<>();
@@ -580,7 +580,7 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
             }
         }
         //mBrandAdapter.notifyDataSetChanged();
-        //recyclerView_goods_list.notifyNewData();
+        recyclerView_goods_list.notifyNewData();
     }
 
     private void initGoodsItem(final int state) {
