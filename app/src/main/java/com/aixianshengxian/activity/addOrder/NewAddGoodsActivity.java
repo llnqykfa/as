@@ -598,7 +598,6 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
 
         pageStart = pageStart + 20;
         pageEnd = pageEnd + 20;
-
         handler.obtainMessage(state,temp).sendToTarget();
     }
 
