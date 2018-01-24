@@ -49,6 +49,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="7">
+
+                <TextView
+                    android:id="@+id/tv_no_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="没有符合搜索条件的数据！"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/margin_350"
+                    android:gravity="center"
+                    android:textColor="@color/gray_text"
+                    android:textSize="@dimen/text_size_14" />
+
                 <android.support.v4.widget.SwipeRefreshLayout
                     android:id="@+id/swipe_refresh_widget"
                     android:layout_width="match_parent"

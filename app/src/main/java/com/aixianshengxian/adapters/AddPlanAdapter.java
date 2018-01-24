@@ -19,11 +19,13 @@ import android.widget.Toast;
 import com.aixianshengxian.R;
 import com.aixianshengxian.activity.plan.PlanActivity;
 import com.aixianshengxian.util.DatesUtils;
+import com.aixianshengxian.util.PurchaseBillUtil;
 import com.xmzynt.storm.service.purchase.plan.ForecastPurchase;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/9/30.
@@ -164,7 +166,20 @@ public class AddPlanAdapter extends RecyclerView.Adapter<AddPlanAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final ForecastPurchase planproduct= mForecastPurchase.get(position);
-        holder.tv_product_name.setText(planproduct.getGoods().getName());//商品名称
+        String uuid = planproduct.getGoods().getCode();
+        String name = planproduct.getGoods().getName();
+        String spec =  planproduct.getGoodsSpec()==null?null:planproduct.getGoodsSpec();
+
+        if (spec != null) {
+            Map<String, Object> valueMap = PurchaseBillUtil.getMap(spec);
+            if (spec.equals("{}")) {
+                holder.tv_product_name.setText(uuid + "  " + name);//商品名称
+            } else {
+                holder.tv_product_name.setText(uuid + "  " + name + "  " + valueMap.keySet() + valueMap.values());//商品名称
+            }
+        } else {
+            holder.tv_product_name.setText(uuid + "  " + name);//商品名称
+        }
         holder.tv_unit.setText(planproduct.getGoodsUnit().getName());//单位
 //        holder.tv_plan_state.setText(planproduct.getStatus().getCaption());//状态
 
@@ -191,7 +206,11 @@ public class AddPlanAdapter extends RecyclerView.Adapter<AddPlanAdapter.ViewHold
         if (holder.edt_purchase_num.getTag() instanceof TextWatcher) {
             holder.edt_purchase_num.removeTextChangedListener((TextWatcher) holder.edt_purchase_num.getTag());
         }
-        holder.edt_purchase_num.setText(String.valueOf(planproduct.getPurchaseQty()));//采购数变化监听
+        if (planproduct.getPurchaseQty().compareTo(BigDecimal.ZERO) > 0) {
+            holder.edt_purchase_num.setText(String.valueOf(planproduct.getPurchaseQty().doubleValue()));//采购数变化监听
+        } else {
+            holder.edt_purchase_num.setText("");
+        }
         TextWatcher watcher = new TextWatcher() {
 
             private ViewHolder mHolder;

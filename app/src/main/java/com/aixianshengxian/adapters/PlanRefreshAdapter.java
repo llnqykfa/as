@@ -215,7 +215,11 @@ public class PlanRefreshAdapter extends RecyclerView.Adapter<PlanRefreshAdapter.
         if (holder.edt_purchase_num.getTag() instanceof TextWatcher) {
             holder.edt_purchase_num.removeTextChangedListener((TextWatcher) holder.edt_purchase_num.getTag());
         }
-        holder.edt_purchase_num.setText(String.valueOf(planproduct.getPurchaseQty().doubleValue()));//采购数变化监听
+        if (planproduct.getPurchaseQty().compareTo(BigDecimal.ZERO) > 0) {
+            holder.edt_purchase_num.setText(String.valueOf(planproduct.getPurchaseQty().doubleValue()));//采购数变化监听
+        } else {
+            holder.edt_purchase_num.setText("");
+        }
         TextWatcher watcher = new TextWatcher() {
 
             private ViewHolder mHolder;

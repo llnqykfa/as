@@ -93,14 +93,14 @@ public class GoodBrandAdapter extends RecyclerView.Adapter<GoodBrandAdapter.View
         final ViewHolder holder = new ViewHolder(view);
 
         if (mOnItemClickListener != null) {
-            //整体监听
+            /*//整体监听
             holder.myView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = holder.getAdapterPosition();//获取点击位置
                     mOnItemClickListener.onItemClick(mGoodsItem.get(position));
                 }
-            });
+            });*/
 
             /*//复选框按钮监听
             holder.cbtn_choose.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){

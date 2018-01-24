@@ -77,4 +77,6 @@ public class DataConstant {
     public static final String FORECASTPROCESSPLAN = "forecastProcessPlan";
     public static final String FORECASTPROCESSPLANS = "forecastProcessPlans";
     public static final String WAREHOUSEUUID = "warehouseUuid";
+    public static final String IMG_TYPE = "IMG-TYPE";
+    public static final String SUPPLIER_UUID = "supplierUuid";
 }

@@ -32,7 +32,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="@dimen/margin_30"
-                android:maxLength="15"
+                android:maxLength="20"
                 android:ellipsize="end"
                 android:text="东北大蒜(大)"
                 android:textColor="@color/black"

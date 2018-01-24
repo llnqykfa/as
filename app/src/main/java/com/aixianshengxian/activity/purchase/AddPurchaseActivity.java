@@ -53,6 +53,7 @@ import com.xmzynt.storm.service.wms.warehouse.Warehouse;
 
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,7 +80,7 @@ public class AddPurchaseActivity extends BaseActivity implements View.OnClickLis
 
 //    private List<AddPurchaseDetail> mData = new ArrayList<>();
 //    private List<AddPurchaseDetail> mDataWhole;
-    private List<ForecastPurchase> mForecastPurchase ;
+    private List<ForecastPurchase> mForecastPurchase = new ArrayList<>();
     private List<PurchaseBillLine> mPurchaseBillLine = new ArrayList<>();
     private PurchaseBill purchaseBill = new PurchaseBill();
 
@@ -258,6 +259,12 @@ public class AddPurchaseActivity extends BaseActivity implements View.OnClickLis
 //                startActivity(AddPlanActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("Add_new", DataConstant.BUNDLE_ADD_GOODS_PURCHASE);
+                if(purchaseBill.getSupplier() != null) {
+                    bundle.putInt("hasProvider",1);
+                    bundle.putSerializable("Provider", (Serializable) purchaseBill.getSupplier().getId());//放进数据流中
+                } else {
+                    bundle.putInt("hasProvider",0);//放进数据流中
+                }
                 startActivityforResult(NewAddGoodsActivity.class,bundle,DataConstant.BUNDLE_REQUEST_ADD_GOODS_PURCHASE);
                 break;
             case R.id.iv_narrow:
@@ -540,7 +547,6 @@ public class AddPurchaseActivity extends BaseActivity implements View.OnClickLis
 
     private void unitAudit(final View v,final int position){
         List<String> mGoodsUuid = new ArrayList<String>();
-        //String goodsuuid = mPurchaseBillLine.get(position).getGoods().getUuid();
         mGoodsUuid.add(mPurchaseBillLine.get(position).getGoods().getUuid());
         HttpManager.dropDownUnit(this, mGoodsUuid, position, new UnitInterface() {
             @Override

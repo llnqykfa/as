@@ -5,8 +5,9 @@ package com.aixianshengxian.constant;
  */
 
 public class UrlConstants {
+//    public static final String HEAD ="http://erp.lbh.atfresh.cn";
     public static final String HEAD ="http://beta.shipments.atfresh.cn";//测试
-    //public static final String HEAD ="http://192.168.3.72:8078";
+//    public static final String HEAD ="http://192.168.3.72:8078";
     /*public static final String HEAD = "http://ifresh.merchant.zxsoon.com";//正式*/
     public static final String URL_LOGIN = HEAD+ "/mdata-controller/mdata/sso/login.do";//登录
     public static final String URL_LOGOUT = HEAD + "/mdata-controller/mdata/sso/logout.do";//注销
@@ -56,6 +57,7 @@ public class UrlConstants {
     public static final String URL_PURCHASE_COMPLETE= HEAD+"/merchant/pda/purchase/complete.do";//根据uuid完成采购订单
     public static final String URL_PURCHASE_CANCEL_AUDIT= HEAD+"/merchant/pda/purchase/cancelAudit.do";//根据uuid反审核采购订单
     public static final String URL_PURCHASE_GET_DROPDOWN_OPERATOR= HEAD+"/merchant/pda/purchase/getDropdownOperator.do";//查询经办人列表
+    public static final String URL_PURCHASE_GET_PURCHASED_GOODS_BY_SUPPLIER = HEAD + "/merchant/pda/purchase/getPurchasedGoodsBySupplier.do";//根据供应商获取采购过的商品uuid
 
     //商品
     public static final String URL_DROP_DOWN_GOODS = HEAD + "/merchant/pda/goods/getDropDownGoods.do";//通用商品列表
@@ -80,9 +82,13 @@ public class UrlConstants {
     public static final String URL_STOCK_OUT_2 = HEAD + "/merchant/pda/wms/stockOut.do";//出库
     public static final String URL_INVENTORY = HEAD + "/merchant/pda/wms/inventory.do";//盘点
     public static final String URL_ALLOCATE = HEAD + "/merchant/pda/wms/allocate.do";//调拨
+    public static final String URL_SCAN_BY_TRACE_CODE = HEAD + "/merchant/pda/wms/scanByTraceCode.do";//扫描库存标签
 
     //加工
     public static final String URL_GET_FORECAST_PROCESS_LIST = HEAD + "/merchant/pda/process/getList.do";//根据过滤条件查询加工计划
     public static final String URL_FORECAST_PROCESS_PLAN_SAVE_MODIFY = HEAD + "/merchant/pda/process/saveModify.do";//编辑保存
     public static final String URL_FORECAST_PROCESS_PLAN_SAVE_NEW = HEAD + "/merchant/pda/process/batchSave.do";//新增保存
+
+    //照片上传处
+    public static final String URL_UPLOAD_PHOTO = HEAD + "/mdata-controller/mdata/ossUtil/uploadPhoto.do";
 }

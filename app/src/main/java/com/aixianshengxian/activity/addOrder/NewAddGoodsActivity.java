@@ -38,6 +38,8 @@ import com.xmzynt.storm.basic.user.UserIdentity;
 import com.xmzynt.storm.common.Platform;
 import com.xmzynt.storm.service.goods.Goods;
 import com.xmzynt.storm.service.goods.GoodsCategory;
+
+import com.xmzynt.storm.service.user.supplier.Supplier;
 import com.xmzynt.storm.util.GsonUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -56,7 +58,7 @@ import okhttp3.Call;
 
 public class NewAddGoodsActivity extends BaseActivity implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener,RefreshRecyclerView.OnLoadDataListener {
     private ImageView image_personal;
-    private TextView tv_head_title;
+    private TextView tv_head_title,tv_no_message;
     private TextView tv_add_temp;
     private ImageView image_search;
     private EditText edit_search_content;
@@ -69,9 +71,11 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
     private List<Goods> mGoods;//获取得到的商品
     private List<GoodsItem> mAllGoodsItem = new ArrayList<>();//向获得的商品填入未选择的状态
     private List<GoodsItem> mGoodsItem = new ArrayList<>();//界面中根据标签筛选显示的数据
-    private Map<String,GoodsItem> mCheckedGoodsItem = new HashMap<>();//选中的商品记录
+    final private Map<String,GoodsItem> mCheckedGoodsItem = new HashMap<>();//选中的商品记录
     private Map<String,List<GoodsItem>> MapmAllGoodsItem = new HashMap<>();//商品分类存放
     private List<GoodsItem> tempGoodItem = new ArrayList<>();//临时存放分类里的东西
+    private List<String> mGoodsBySupplierUuid = new ArrayList<>();
+    //private List<GoodsItem> mGoodsItemBySupplier = new ArrayList<>();
 
     private List<GoodsCategory> mAllCategory;//分类
     private List<GoodsCategory> mGoodsCategory = new ArrayList<>();//分类
@@ -98,6 +102,9 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
     private String KeyWordsLike = null;
     private Boolean first = true;
 
+    private int has = 0;
+    private String supplierId = null;
+
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -106,7 +113,7 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
                 case HANDLE_GET_GOODS_ITEM_MORE:
                     mBrandAdapter.addMoreItem(datas);
                     //mOutItem = mAdapter.getData();
-                    mBrandAdapter.notifyDataSetChanged();
+                    //mBrandAdapter.notifyDataSetChanged();
                     recyclerView_goods_list.notifyNewData();
                     break;
             }
@@ -151,6 +158,13 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
         if (ADD_NEW_PLAN == 6) {
             Type = (String) intent.getSerializableExtra("type");
         }
+        else if (ADD_NEW_PLAN == 4) {
+            has = (int) intent.getSerializableExtra("hasProvider");
+            if (has == 1) {
+                supplierId = (String) intent.getSerializableExtra("Provider");
+                getPurchaseGoodsUuidBySupplier();
+            }
+        }
     }
 
     @Override
@@ -167,6 +181,8 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
         recyclerView_parent_list = (RecyclerView) findViewById(R.id.recylerView_parent_list);
         recyclerView_goods_list = (RefreshRecyclerView) findViewById(R.id.recylerView_goods_list);
         btn_add_new_goods = (Button) findViewById(R.id.btn_add_new_goods);
+
+        tv_no_message = (TextView) findViewById(R.id.tv_no_message);
     }
 
     @Override
@@ -193,9 +209,10 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
                     //first = false;
                     //dropDownGoods();
 
+                    recyclerView_goods_list.setLoadMoreEnable(false);
                     mGoodsItem.clear();
-                    if (tempGoodItem != null && tempGoodItem.size() > 0) {
-                        for(GoodsItem goodsItem : tempGoodItem){
+                    if (mAllGoodsItem!= null && mAllGoodsItem.size() > 0) {
+                        for(GoodsItem goodsItem : mAllGoodsItem){
                             String name = goodsItem.getGoods().getName();
                             if(name.contains(s)){
                                 mGoodsItem.add(goodsItem);
@@ -203,7 +220,7 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
                         }
                     }
                     if(mBrandAdapter != null){
-                        mBrandAdapter.notifyDataSetChanged();
+                        //mBrandAdapter.notifyDataSetChanged();
                         recyclerView_goods_list.notifyNewData();
                     }
                 }
@@ -215,10 +232,10 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_personal:
-                finish();
-                break;
-            case R.id.btn_add_new_goods:
-                switch (ADD_NEW_PLAN) {
+                    finish();
+                    break;
+                    case R.id.btn_add_new_goods:
+                        switch (ADD_NEW_PLAN) {
                     case 0:
                         Intent intent1 = new Intent(NewAddGoodsActivity.this, AddPlanActivity.class);
                         Bundle bundle1 = new Bundle();
@@ -297,10 +314,15 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
                 mGoodsItem.clear();
                 pageStart = 0;
                 pageEnd = 20;
-                List<String> leafs = new ArrayList<String>();
-                getLeafs(goodsCategory,leafs);
-                getGoodItems(leafs);
-                mBrandAdapter.notifyDataSetChanged();
+                if (goodsCategory.getName() == "常用") {
+                    getPurchaseGoodsBySupplier();
+                } else {
+                    List<String> leafs = new ArrayList<String>();
+                    getLeafs(goodsCategory,leafs);
+                    getGoodItems(leafs);
+                }
+
+                //mBrandAdapter.notifyDataSetChanged();
                 recyclerView_goods_list.notifyNewData();
             }
         });
@@ -378,6 +400,15 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
                             }.getType();
                             if (response.getData() != null) {
                                 mGoodsCategory.clear();
+                                if (ADD_NEW_PLAN == 4) {
+                                    if (has == 1) {
+                                        GoodsCategory frequently = new GoodsCategory();
+                                        frequently.setName("常用");
+                                        mGoodsCategory.add(frequently);
+                                    }
+                                }
+
+
                                 mAllCategory = GsonUtil.getGson().fromJson(response.getData(), listTypeA);
                                 if (mAllCategory != null && mAllCategory.size() >0) {
                                     mCategoryAdapter.setSelectItem(0);
@@ -491,10 +522,16 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
                                 }
 
                                 mGoodsItem.clear();
-                                GoodsCategory goodsCategory = mGoodsCategory.get(0);
-                                List<String> leafs = new ArrayList<String>();
-                                getLeafs(goodsCategory,leafs);
-                                getGoodItems(leafs);
+                                if (has == 0) {
+                                    GoodsCategory goodsCategory = mGoodsCategory.get(0);
+                                    List<String> leafs = new ArrayList<String>();
+                                    getLeafs(goodsCategory,leafs);
+                                    getGoodItems(leafs);
+                                } else {
+                                    getPurchaseGoodsBySupplier();
+                                }
+                                recyclerView_goods_list.notifyNewData();
+
                                 /*if (first) {
 
                                 } else {
@@ -520,7 +557,8 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
     public void getGoodItems(List<String> leafs) {
         for (String leaf : leafs) {
             if (MapmAllGoodsItem.get(leaf) != null) {
-                //tempGoodItem.clear();
+                tv_no_message.setVisibility(View.GONE);
+                tempGoodItem = null;
                 tempGoodItem = MapmAllGoodsItem.get(leaf);
                 int size = tempGoodItem.size();
                 //mGoodsItem.addAll(tempGoodItem);
@@ -529,6 +567,7 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
                     pageCount ++;
                 }
                 if (size <= 20) {
+                    recyclerView_goods_list.setLoadMoreEnable(false);
                     mGoodsItem.addAll(tempGoodItem);
                 } else {
                     recyclerView_goods_list.setLoadMoreEnable(true);
@@ -536,20 +575,22 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
                     initGoodsItem(HANDLE_GET_GOODS_ITEM_MORE);
                     //mGoodsItem.addAll(temp);
                 }
+            } else {
+                tv_no_message.setVisibility(View.VISIBLE);
             }
         }
-        mBrandAdapter.notifyDataSetChanged();
-        recyclerView_goods_list.notifyNewData();
+        //mBrandAdapter.notifyDataSetChanged();
+        //recyclerView_goods_list.notifyNewData();
     }
 
     private void initGoodsItem(final int state) {
         List<GoodsItem> temp = null;
         if (pageEnd > tempGoodItem.size()) {
-            recyclerView_goods_list.setLoadMoreEnable(false);
+            recyclerView_goods_list.setLoadMoreEnable(false);//不加载
             temp = tempGoodItem.subList(pageStart,tempGoodItem.size());
             //initGoodsItem(HANDLE_GET_GOODS_ITEM_MORE);
         } else {
-            recyclerView_goods_list.setLoadMoreEnable(true);
+            recyclerView_goods_list.setLoadMoreEnable(true);//加载
             temp = tempGoodItem.subList(pageStart,pageEnd);
             //initGoodsItem(HANDLE_GET_GOODS_ITEM_MORE);
         }
@@ -559,6 +600,80 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
         pageEnd = pageEnd + 20;
 
         handler.obtainMessage(state,temp).sendToTarget();
+    }
+
+    private void getPurchaseGoodsUuidBySupplier() {
+        String userUuid = SessionUtils.getInstance(getApplicationContext()).getCustomerUUID();
+        String userName = SessionUtils.getInstance(getApplicationContext()).getLoginPhone();
+        String sessionId = SessionUtils.getInstance(getApplicationContext()).getSessionId();
+        JSONObject reparams = new JSONObject();
+        try {
+            JSONObject body = new JSONObject();
+            try {
+                body.put(DataConstant.SUPPLIER_UUID, supplierId);
+                reparams.put(BasicConstants.URL_BODY, body);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            reparams.put(BasicConstants.URL_PLATFORM, Platform.android.name());
+            reparams.put(BasicConstants.Field.USER_IDENTITY, UserIdentity.merchant.name());
+            reparams.put(DataConstant.SESSIONID, sessionId);
+            reparams.put(BasicConstants.Field.USER_UUID, userUuid);
+            reparams.put(BasicConstants.Field.USER_NAME, userName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        OkHttpUtils.postString().url(UrlConstants.URL_PURCHASE_GET_PURCHASED_GOODS_BY_SUPPLIER)
+                .addHeader("Cookie", "PHPSESSID=" + 123456)
+                .addHeader("X-Requested-With", "XMLHttpRequest")
+                .addHeader("Content-Type", "application/json;chartset=utf-8")
+                .content(reparams.toString())
+                .build()
+                .execute(new StringCallback() {
+
+                    @Override
+                    public void onError(Call call, Exception e, int i) {
+                        showCustomToast("请求失败");
+                    }
+
+                    @Override
+                    public void onResponse(String s, int i) {
+                        ResponseBean response = GsonUtil.getGson().fromJson(s, ResponseBean.class);
+                        if (response.getErrorCode() == 0) {
+                            Type listTypeA = new TypeToken<List<String>>() {
+                            }.getType();
+                            if (response.getData() != null) {
+                                mGoodsBySupplierUuid = GsonUtil.getGson().fromJson(response.getData(), listTypeA);
+                            }
+                            showCustomToast("请求成功");
+                            showLogDebug("main", s);
+                        } else {
+                            showCustomToast(response.getMessage());
+                        }
+                    }
+                });
+    }
+
+    private void getPurchaseGoodsBySupplier() {
+        swipe_refresh_widget.setRefreshing(false);
+        recyclerView_goods_list.setLoadMoreEnable(false);
+        if (mGoodsBySupplierUuid.size() > 0) {
+            //mGoodsItemBySupplier.clear();
+            for (int i = 0;i < mGoodsBySupplierUuid.size();i ++) {
+                for (int j = 0;j < mAllGoodsItem.size();j ++) {
+                    //String goodsUuid = mAllGoodsItem.get(j).getGoods().getUuid();
+                    //String goodsUuidBySupplier = mGoodsBySupplierUuid.get(i);
+                    if (mAllGoodsItem.get(j).getGoods().getUuid().equals(mGoodsBySupplierUuid.get(i))) {
+                        mGoodsItem.add(mAllGoodsItem.get(j));
+                    }
+                }
+            }
+            //mGoodsItem.addAll(mGoodsItemBySupplier);
+            //recyclerView_goods_list.notifyNewData();
+        } else {
+            tv_no_message.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
