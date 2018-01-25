@@ -84,10 +84,6 @@ public class AddPurchaseActivity extends BaseActivity implements View.OnClickLis
     private List<PurchaseBillLine> mPurchaseBillLine = new ArrayList<>();
     private PurchaseBill purchaseBill = new PurchaseBill();
 
-//    private List<String> mOperate = new ArrayList<>();
-
-//    private final String[] mOperator = {"黄飞鸿","许仙","霍元甲","小明"};
-//    private final String Operator = ("经办人");
     private IdName operator = null;
     private List<IdName> operators = new ArrayList<IdName>();
 

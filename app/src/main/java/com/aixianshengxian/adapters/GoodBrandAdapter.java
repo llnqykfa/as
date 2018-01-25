@@ -13,14 +13,8 @@ import com.aixianshengxian.R;
 import com.aixianshengxian.module.GoodsItem;
 import com.aixianshengxian.util.PurchaseBillUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Administrator on 2017/11/13.

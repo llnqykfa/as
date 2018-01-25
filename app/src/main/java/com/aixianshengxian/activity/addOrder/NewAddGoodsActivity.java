@@ -59,8 +59,6 @@ import okhttp3.Call;
 public class NewAddGoodsActivity extends BaseActivity implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener,RefreshRecyclerView.OnLoadDataListener {
     private ImageView image_personal;
     private TextView tv_head_title,tv_no_message;
-    private TextView tv_add_temp;
-    private ImageView image_search;
     private EditText edit_search_content;
     private ImageView image_close_search;
     private RecyclerView recyclerView_parent_list;
@@ -172,7 +170,6 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
         image_personal = (ImageView) findViewById(R.id.image_personal);
         tv_head_title = (TextView) findViewById(R.id.tv_head_title);
         tv_head_title.setText("选择商品");
-        image_search = (ImageView) findViewById(R.id.image_search);
         edit_search_content = (EditText) findViewById(R.id.edit_search_content);
         image_close_search = (ImageView) findViewById(R.id.image_close_search);
         image_close_search.setVisibility(View.GONE);
@@ -580,7 +577,7 @@ public class NewAddGoodsActivity extends BaseActivity implements View.OnClickLis
             }
         }
         //mBrandAdapter.notifyDataSetChanged();
-        recyclerView_goods_list.notifyNewData();
+        //recyclerView_goods_list.notifyNewData();
     }
 
     private void initGoodsItem(final int state) {
