@@ -261,12 +261,6 @@ public class PurchaseActivity extends BaseActivity implements View.OnClickListen
                 onRefresh();
                 break;
             case R.id.image_add_new:
-//                Intent intent1 = new Intent(PurchaseActivity.this,NewAddGoodsActivity.class);
-//                Bundle bundle1 = new Bundle();
-//                ADD_NEW_PLAN = 0;
-//                bundle1.putSerializable("Add_new",ADD_NEW_PLAN);
-//                intent1.putExtras(bundle1);
-//                startActivity(intent1);
                   startActivity(AddPurchaseActivity.class);
                 break;
             case R.id.iv_narrow:

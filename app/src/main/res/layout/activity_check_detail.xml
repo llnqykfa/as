@@ -452,6 +452,14 @@
                 android:layout_marginTop="@dimen/margin_top_5"
                 android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="验收备注"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_14" />
+
                 <EditText
                     android:id="@+id/edt_check_remark"
                     android:layout_width="0dp"
@@ -463,14 +471,6 @@
                     android:padding="@dimen/margin_top_10"
                     android:singleLine="true"
                     android:textColor="@color/gray_text3"
-                    android:textSize="@dimen/text_size_14" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="验收备注"
-                    android:textColor="@color/black"
                     android:textSize="@dimen/text_size_14" />
 
             </LinearLayout>
