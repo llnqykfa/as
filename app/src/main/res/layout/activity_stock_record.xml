@@ -55,13 +55,13 @@
                     android:id="@+id/tv_no_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:text="没有符合搜索条件的数据！"
                     android:layout_centerInParent="true"
-                    android:layout_marginTop="@dimen/margin_350"
+                    android:layout_marginTop="@dimen/margin_390"
                     android:gravity="center"
                     android:textColor="@color/gray_text"
-                    android:textSize="@dimen/text_size_14"/>
+                    android:textSize="@dimen/text_size_14"
+                    android:visibility="gone"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recylerView_goods_list"

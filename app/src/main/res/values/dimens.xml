@@ -27,6 +27,10 @@
     <dimen name="margin_180">180dp</dimen>
     <dimen name="margin_250">250dp</dimen>
     <dimen name="margin_350">350dp</dimen>
+    <dimen name="margin_360">360dp</dimen>
+    <dimen name="margin_370">370dp</dimen>
+    <dimen name="margin_380">380dp</dimen>
+    <dimen name="margin_390">390dp</dimen>
     <dimen name="padding_top">5dp</dimen>
 
     <dimen name="text_size_10">10sp</dimen>

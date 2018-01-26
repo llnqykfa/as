@@ -19,6 +19,7 @@ import com.aixianshengxian.R;
 import com.aixianshengxian.constant.DataConstant;
 import com.aixianshengxian.constant.UrlConstants;
 import com.aixianshengxian.entity.ResponseBean;
+import com.aixianshengxian.module.BroadcastAction;
 import com.aixianshengxian.util.DatesUtils;
 import com.aixianshengxian.util.SessionUtils;
 import com.google.gson.reflect.TypeToken;
@@ -100,25 +101,25 @@ public class InventoryDetailActivity extends BaseActivity implements View.OnClic
         tv_stockin_time.setText(DatesUtils.dateToStr(Stocks.get(0).getStockInDate()));
         //产地
         tv_place = (TextView) findViewById(R.id.tv_place);
-        tv_place.setText(Stocks.get(0).getOrigin());
+//        tv_place.setText(Stocks.get(0).getOrigin());
         //批号
-        tv_batch_number = (TextView) findViewById(R.id.tv_batch_number);
-        tv_batch_number.setText(Stocks.get(0).getBatchNumber());
+        //tv_batch_number = (TextView) findViewById(R.id.tv_batch_number);
+//        tv_batch_number.setText(Stocks.get(0).getBatchNumber());
         //生产日期
-        tv_productive_time = (TextView) findViewById(R.id.tv_productive_time);
-        if (Stocks.get(0).getProduceDate() != null) {
-            tv_productive_time.setText(DatesUtils.dateToStr(Stocks.get(0).getProduceDate()));
-        } else {
-            tv_productive_time.setText("");
-        }
+        //tv_productive_time = (TextView) findViewById(R.id.tv_productive_time);
+//        if (Stocks.get(0).getProduceDate() != null) {
+//            tv_productive_time.setText(DatesUtils.dateToStr(Stocks.get(0).getProduceDate()));
+//        } else {
+//            tv_productive_time.setText("");
+//        }
 
         //有效日期
-        tv_effective_time = (TextView) findViewById(R.id.tv_effective_time);
-        if (Stocks.get(0).getEffectiveDate() != null) {
-            tv_effective_time.setText(DatesUtils.dateToStr(Stocks.get(0).getEffectiveDate()));
-        } else {
-            tv_effective_time.setText("");
-        }
+        //tv_effective_time = (TextView) findViewById(R.id.tv_effective_time);
+//        if (Stocks.get(0).getEffectiveDate() != null) {
+//            tv_effective_time.setText(DatesUtils.dateToStr(Stocks.get(0).getEffectiveDate()));
+//        } else {
+//            tv_effective_time.setText("");
+//        }
         //实际数量
         edt_inventory_num = (EditText) findViewById(R.id.edt_inventory_num);
         //这个很重要，先移开TextWatcher的监听器
@@ -147,7 +148,7 @@ public class InventoryDetailActivity extends BaseActivity implements View.OnClic
         edt_inventory_num.addTextChangedListener(watcher1);
         edt_inventory_num.setTag(watcher1);
 
-        tv_associated = (TextView) findViewById(R.id.tv_associated);
+        //tv_associated = (TextView) findViewById(R.id.tv_associated);
     }
 
     @Override
@@ -173,6 +174,10 @@ public class InventoryDetailActivity extends BaseActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_personal:
+                Intent intent = new Intent(
+                        BroadcastAction.ACTION_STOCK_RECORD_REFRESH);
+                // 发送广播
+                sendBroadcast(intent);
                 finish();
                 break;
             case R.id.btn_confirm:
@@ -197,12 +202,12 @@ public class InventoryDetailActivity extends BaseActivity implements View.OnClic
             ll_nomessage.setVisibility(View.VISIBLE);
         } else {
             initData();
-            if (Stocks.get(0).getBasketCodes() != null) {
-                List<String> associatedBasket = Stocks.get(0).getBasketCodes();
-                showAssociatedBasket(associatedBasket);
-            } else {
-                tv_associated.setText("没有关联周转箱");
-            }
+//            if (Stocks.get(0).getBasketCodes() != null) {
+//                List<String> associatedBasket = Stocks.get(0).getBasketCodes();
+//                showAssociatedBasket(associatedBasket);
+//            } else {
+//                tv_associated.setText("没有关联周转箱");
+//            }
             ll_nomessage.setVisibility(View.GONE);
         }
     }
@@ -299,6 +304,10 @@ public class InventoryDetailActivity extends BaseActivity implements View.OnClic
                         if (response.getErrorCode() == 0) {
                             showCustomToast("请求成功");
                             finish();
+                            Intent intent = new Intent(
+                                    BroadcastAction.ACTION_STOCK_RECORD_REFRESH);
+                            // 发送广播
+                            sendBroadcast(intent);
                             showLogDebug("main", s);
                         }  else {
                             showCustomToast(response.getMessage());

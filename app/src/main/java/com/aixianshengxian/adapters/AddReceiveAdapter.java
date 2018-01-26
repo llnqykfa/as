@@ -69,7 +69,7 @@ public class AddReceiveAdapter extends RecyclerView.Adapter<AddReceiveAdapter.Vi
     }
 
     //给监听设置一个构造函数，用于main中调用
-    public void setOnItemListener(AddReceiveAdapter.OnItemClickListener mOnItemClickListener) {
+    public void setOnItemListener(OnItemClickListener mOnItemClickListener) {
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
@@ -119,7 +119,7 @@ public class AddReceiveAdapter extends RecyclerView.Adapter<AddReceiveAdapter.Vi
         if(mStockOutRecordItem != null && mStockOutRecordItem.size()>0){
             final StockOutRecordItem stockOutRecordItem= mStockOutRecordItem.get(position);
             holder.tv_product_name.setText(stockOutRecordItem.getStockOutRecord().getGoods().getName());//商品名称
-            holder.tv_price.setText(String.valueOf(stockOutRecordItem.getStockOutRecord().getPrice()));//单价
+            //holder.tv_price.setText(String.valueOf(stockOutRecordItem.getStockOutRecord().getPrice()));//单价
             holder.tv_unit.setText(stockOutRecordItem.getStockOutRecord().getGoodsUnit().getName());//单位
             holder.tv_receive_num.setText(String.valueOf(stockOutRecordItem.getStockOutRecord().getQuantity()));//领用量
             BigDecimal consumeNum = stockOutRecordItem.getStockOutRecord().getQuantity().subtract(stockOutRecordItem.getStockOutRecord().getRemainderQty());//消耗量

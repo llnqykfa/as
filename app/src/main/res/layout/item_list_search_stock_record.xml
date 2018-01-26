@@ -11,45 +11,47 @@
 
             <TextView
                 android:id="@+id/tv_product_name"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="2.5"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="@dimen/margin_20"
-                android:maxLength="15"
+                android:layout_marginRight="@dimen/margin_20"
+                android:maxLines="2"
                 android:ellipsize="end"
                 android:text="鲜香菇（大）"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size_14" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:layout_alignParentLeft="true"
-                android:layout_marginRight="@dimen/margin_15"
-                android:gravity="right">
 
-                <TextView
-                    android:id="@+id/tv_stock_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="200"
-                    android:textColor="@color/green_text"
-                    android:textSize="@dimen/text_size_14" />
-
-                <TextView
-                    android:id="@+id/tv_unit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_top_10"
-                    android:text="kg"
-                    android:textColor="@color/gray_text"
-                    android:textSize="@dimen/text_size_14" />
-
-            </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_20"
+            android:layout_marginRight="@dimen/margin_20"
+            android:layout_marginBottom="@dimen/margin_20"
+            android:layout_alignParentBottom="true">
 
+            <TextView
+                android:id="@+id/tv_stock_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="200"
+                android:textColor="@color/green_text"
+                android:textSize="@dimen/text_size_14" />
+
+            <TextView
+                android:id="@+id/tv_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_top_10"
+                android:text="kg"
+                android:textColor="@color/gray_text"
+                android:textSize="@dimen/text_size_14" />
+
+    </LinearLayout>
+<!--
         <TextView
             android:id="@+id/tv_associated"
             android:layout_width="wrap_content"
@@ -58,9 +60,9 @@
             android:layout_marginLeft="@dimen/margin_20"
             android:layout_marginBottom="@dimen/margin_20"
             android:layout_alignParentBottom="true"
-            android:text="10001"
             android:textColor="@color/gray_text"
             android:textSize="@dimen/text_size_14" />
+-->
 
         <!--<ImageView
             android:layout_width="20dp"

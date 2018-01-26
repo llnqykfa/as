@@ -184,10 +184,10 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
         tv_place = (TextView) findViewById(R.id.tv_place);
         //tv_place.setText(Stocks.get(0).getOrigin());
         //批号
-        tv_batch_number = (TextView) findViewById(R.id.tv_batch_number);
+        //tv_batch_number = (TextView) findViewById(R.id.tv_batch_number);
         //tv_batch_number.setText(Stocks.get(0).getBatchNumber());
         //生产日期
-        tv_productive_time = (TextView) findViewById(R.id.tv_productive_time);
+        //tv_productive_time = (TextView) findViewById(R.id.tv_productive_time);
         /*if (Stocks.get(0).getProduceDate() != null) {
             tv_productive_time.setText(DatesUtils.dateToStr(Stocks.get(0).getProduceDate()));
         } else {
@@ -195,7 +195,7 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
         }*/
 
         //有效日期
-        tv_effective_time = (TextView) findViewById(R.id.tv_effective_time);
+        //tv_effective_time = (TextView) findViewById(R.id.tv_effective_time);
         /*if (Stocks.get(0).getEffectiveDate() != null) {
             tv_effective_time.setText(DatesUtils.dateToStr(Stocks.get(0).getEffectiveDate()));
         } else {
@@ -230,7 +230,7 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
         edt_allocate_num.addTextChangedListener(watcher1);
         edt_allocate_num.setTag(watcher1);
 
-        tv_associated = (TextView) findViewById(R.id.tv_associated);
+        //tv_associated = (TextView) findViewById(R.id.tv_associated);
     }
 
     @Override

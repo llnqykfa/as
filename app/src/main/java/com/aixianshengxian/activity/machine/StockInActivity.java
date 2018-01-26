@@ -431,21 +431,21 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
             stockInRecord.setGoodsUnit(forecastProcessPlan.getGoodsUnit());//GoodsUnit
             stockInRecord.setSourceBillLineUuid(forecastProcessPlan.getUuid());//SourceBillLineUuid
             stockInRecord.setQuantity(forecastProcessPlanItem.getStockInNum());//Quantity
-            stockInRecord.setPrice(forecastProcessPlanItem.getPrice());//Price
+//            stockInRecord.setPrice(forecastProcessPlanItem.getPrice());//Price
             stockInRecord.setInDate(new Date());//InDate
             stockInRecord.setDeliveryTime(new Date());//DeliveryTime
-            stockInRecord.setOperatorName(SessionUtils.getInstance(getApplicationContext()).getLoginPhone());//OperatorName
+//            stockInRecord.setOperatorName(SessionUtils.getInstance(getApplicationContext()).getLoginPhone());//OperatorName
 
             if (operator != null) {
                 OperateInfo operateInfo = new OperateInfo();
                 operateInfo.setOperateTime(new Date());
                 operateInfo.setOperator(operator);
-                stockInRecord.setCreatorInfo(operateInfo);//CreatorInfo
+//                stockInRecord.setCreatorInfo(operateInfo);//CreatorInfo
             }
 
-            stockInRecord.setProduceDate(new Date());//ProduceDate
-            stockInRecord.setEffectiveDate(DatesUtils.strToDate(DatesUtils.getStringDateShortFromToday(forecastProcessPlanItem.getDay())));//EffectiveDate
-            stockInRecord.setBasketCodes(forecastProcessPlanItem.getBasketCodes());//BasketCodes
+//            stockInRecord.setProduceDate(new Date());//ProduceDate
+//            stockInRecord.setEffectiveDate(DatesUtils.strToDate(DatesUtils.getStringDateShortFromToday(forecastProcessPlanItem.getDay())));//EffectiveDate
+//            stockInRecord.setBasketCodes(forecastProcessPlanItem.getBasketCodes());//BasketCodes
             stockInRecord.setMaterials(getMaterialTrees());//Materials
             mStockInRecords.add(stockInRecord);
         }

@@ -33,7 +33,6 @@ import android.widget.Toast;
 
 import com.aixianshengxian.BaseActivity;
 import com.aixianshengxian.R;
-import com.aixianshengxian.activity.check.CheckDetailActivity;
 import com.aixianshengxian.adapters.PurchaseDetailAdapter;
 import com.aixianshengxian.constant.DataConstant;
 import com.aixianshengxian.constant.UrlConstants;
@@ -106,6 +105,8 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
 //    private List<PurchaseDetail> mDataWhole;
     private final String[] mListNoAudit = {"标签打印","删除","编辑","审核"};
     private final String[] mListAudit = {"反审核","标签打印"};
+    private final String[] mListStockIned = {"完成","标签打印"};
+    private final String[] mListCompleted = {"标签打印"};
 
     private RecyclerView product_listview;
     private SwipeRefreshLayout swipe_refresh_widget;
@@ -119,6 +120,8 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
     private boolean mIsConnected;
 
     private ProgressBar mProgressBar;
+
+    int Bule = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +188,8 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
 
         iv_connect = (ImageView) findViewById(R.id.iv_connect);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
+
+        mBixolonPrinter.findBluetoothPrinters();//蓝牙连接时
     }
 
     @Override
@@ -226,14 +231,14 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
                 tv_operator.setText("");
             }
 
-            if(mPurchaseBill.getStatus().getCaption().equals("已完成")) {//状态为已完成时
+            /*if(mPurchaseBill.getStatus().getCaption().equals("已完成")) {//状态为已完成时
                 ll_bottom.setVisibility(View.GONE);//下方按钮不显示
             } else {
                 ll_bottom.setVisibility(View.VISIBLE);//下方按钮显示
                 if(mPurchaseBill.getStatus().getCaption().equals("已入库")) {//状态为已入库时
                     btn_operate.setText("完  成");//下方按钮显示
                 }
-            }
+            }*/
 
             tv_total_price.setText(String.valueOf(mPurchaseBill.getTotalAmount()));
 
@@ -300,11 +305,14 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
                         audited(v);
                     }
                 else if(mPurchaseBill.getStatus().getCaption().equals("已入库")) {
-                    operatePurchasesBill(DataConstant.URL_PURCHASE_COMPLETE);
-                    getPurchaseOrder();
+                    stockIned(v);
+                }
+                else if(mPurchaseBill.getStatus().getCaption().equals("已完成")) {
+                    completed(v);
                 }
                 break;
             case R.id.iv_connect:
+                Bule = 1;
                 mBixolonPrinter.findBluetoothPrinters();//蓝牙连接时
                 break;
             default:
@@ -322,17 +330,21 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
                         showCustomToast("没有配对的蓝牙打印机");
                         //Toast.makeText(getApplicationContext(), "没有配对的蓝牙打印机", Toast.LENGTH_SHORT).show();
                     } else {//获取与蓝牙配对的打印机名称
-                        DialogManager.showBluetoothDialog(PurchaseDetailActivity.this, (Set<BluetoothDevice>) msg.obj);
+                        if (Bule == 1) {
+                            DialogManager.showBluetoothDialog(PurchaseDetailActivity.this, (Set<BluetoothDevice>) msg.obj);
+                        } else {
+                            mBixolonPrinter.connect(((BluetoothDevice)(new ArrayList((Set<BluetoothDevice>) msg.obj).get(0))).getAddress());
+                        }
                     }
                     return true;
                 case BixolonPrinter.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case BixolonPrinter.STATE_CONNECTED:
-                            showCustomToast(getString(R.string.title_connected_to, mConnectedDeviceName));
+                            //showCustomToast(getString(R.string.title_connected_to, mConnectedDeviceName));
                             mIsConnected = true;
                             break;
                         case BixolonPrinter.STATE_CONNECTING:
-                            showCustomToast(getString(R.string.title_connecting));
+                            //showCustomToast(getString(R.string.title_connecting));
                             break;
                         case BixolonPrinter.STATE_NONE:
                             showCustomToast(getString(R.string.title_not_connected));
@@ -357,32 +369,39 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
 
     private void printText(PurchaseBillLine purchasedetail) {
         mBixolonPrinter.setPageMode();//页面模式
-        mBixolonPrinter.setPrintArea(0,0,670,216);//打印范围
+        mBixolonPrinter.setPrintArea(0,0,670,193);//打印范围
 
         //打印二维码
         mBixolonPrinter.setAbsolutePrintPosition(0);//X坐标
-        mBixolonPrinter.setAbsoluteVerticalPrintPosition(140);//内容高
-        PurchaseDetailActivity.mBixolonPrinter.printQrCode(purchasedetail.getUuid(), BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.QR_CODE_MODEL2, 5, true);
+        mBixolonPrinter.setAbsoluteVerticalPrintPosition(135);//内容高
+        PurchaseDetailActivity.mBixolonPrinter.printQrCode(purchasedetail.getPurchaseBatch(), BixolonPrinter.ALIGNMENT_CENTER, BixolonPrinter.QR_CODE_MODEL2, 5, true);
 
         //打印文本
         String goodsName = purchasedetail.getGoods().getName();
+        String cutGoodsName;
+        if (goodsName.length() > 7) {
+            cutGoodsName = goodsName.substring(0,7);
+        } else {
+            cutGoodsName = goodsName;
+        }
+
         mBixolonPrinter.setAbsolutePrintPosition(200);//X坐标
-        mBixolonPrinter.setAbsoluteVerticalPrintPosition(45);//内容高0
-        PurchaseDetailActivity.mBixolonPrinter.printText(goodsName, BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, BixolonPrinter.TEXT_SIZE_HORIZONTAL2|TEXT_SIZE_VERTICAL2, false);
+        mBixolonPrinter.setAbsoluteVerticalPrintPosition(43);//内容高0
+        PurchaseDetailActivity.mBixolonPrinter.printText(cutGoodsName, BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, BixolonPrinter.TEXT_SIZE_HORIZONTAL2|TEXT_SIZE_VERTICAL2, false);
 
         String purchaseQty = purchasedetail.getPurchaseQty().doubleValue()+purchasedetail.getGoodsUnit().getName();
         mBixolonPrinter.setAbsolutePrintPosition(200);//X坐标
-        mBixolonPrinter.setAbsoluteVerticalPrintPosition(80);//内容高
+        mBixolonPrinter.setAbsoluteVerticalPrintPosition(75);//内容高
         PurchaseDetailActivity.mBixolonPrinter.printText(purchaseQty, BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, BixolonPrinter.TEXT_SIZE_HORIZONTAL1|TEXT_SIZE_VERTICAL1, false);
 
         String customerName=purchasedetail.getCustomer()==null ?"暂无客户":purchasedetail.getCustomer().getName()+(purchasedetail.getCustomerDept()==null?"":"【"+purchasedetail.getCustomerDept().getName()+"】");
         mBixolonPrinter.setAbsolutePrintPosition(200);//X坐标
-        mBixolonPrinter.setAbsoluteVerticalPrintPosition(110);//内容高
+        mBixolonPrinter.setAbsoluteVerticalPrintPosition(105);//内容高
         PurchaseDetailActivity.mBixolonPrinter.printText(customerName, BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, BixolonPrinter.TEXT_SIZE_HORIZONTAL1|TEXT_SIZE_VERTICAL1, false);
 
         String supplierName = mPurchaseBill.getSupplier() == null ?"暂无供应商":mPurchaseBill.getSupplier().getName();
         mBixolonPrinter.setAbsolutePrintPosition(200);//X坐标
-        mBixolonPrinter.setAbsoluteVerticalPrintPosition(140);//内容高
+        mBixolonPrinter.setAbsoluteVerticalPrintPosition(135);//内容高
         PurchaseDetailActivity.mBixolonPrinter.printText(supplierName, BixolonPrinter.ALIGNMENT_LEFT, BixolonPrinter.TEXT_ATTRIBUTE_FONT_A, BixolonPrinter.TEXT_SIZE_HORIZONTAL1|TEXT_SIZE_VERTICAL1, false);
 
         mBixolonPrinter.formFeed(true);
@@ -457,6 +476,42 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
                 }
             }
         },v,mListAudit);
+    }
+
+    private void stockIned(View v){
+
+        new OrderManagerPopupWindow(this, new OrderManagerPopupWindow.ResultListener() {
+            @Override
+            public void onResultChanged(int index) {
+                switch (mListStockIned[index]) {
+                    case "完成":
+                        operatePurchasesBill(DataConstant.URL_PURCHASE_COMPLETE);
+                        getPurchaseOrder();
+                        break;
+                    case "标签打印":
+                        for (int i = 0;i < mData.size();i ++) {
+                            printText(mData.get(i));
+                        }
+                        break;
+                }
+            }
+        },v,mListStockIned);
+    }
+
+    private void completed(View v){
+
+        new OrderManagerPopupWindow(this, new OrderManagerPopupWindow.ResultListener() {
+            @Override
+            public void onResultChanged(int index) {
+                switch (mListCompleted[index]) {
+                    case "标签打印":
+                        for (int i = 0;i < mData.size();i ++) {
+                            printText(mData.get(i));
+                        }
+                        break;
+                }
+            }
+        },v,mListCompleted);
     }
 
     private void operatePurchasesBill(int tag){
@@ -558,15 +613,15 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
 
                         ResponseBean response = GsonUtil.getGson().fromJson(s, ResponseBean.class);
                         if (response.getErrorCode() == 0) {
-                            mPurchaseData = GsonUtil.getGson().fromJson(response.getData(),PurchaseData.class);
-                            Intent intent1 = new Intent(PurchaseDetailActivity.this,CheckDetailActivity.class);
-                            Bundle bundle1 = new Bundle();
-                            bundle1.putSerializable("PurchaseData", (Serializable) mPurchaseData);
-                            intent1.putExtras(bundle1);
-                            startActivity(intent1);
-
-                            showCustomToast("请求成功");
-                            showLogDebug("main", s);
+//                            mPurchaseData = GsonUtil.getGson().fromJson(response.getData(),PurchaseData.class);
+//                            Intent intent1 = new Intent(PurchaseDetailActivity.this,CheckDetailActivity.class);
+//                            Bundle bundle1 = new Bundle();
+//                            bundle1.putSerializable("PurchaseData", (Serializable) mPurchaseData);
+//                            intent1.putExtras(bundle1);
+//                            startActivity(intent1);
+//
+//                            showCustomToast("请求成功");
+//                            showLogDebug("main", s);
                         }  else {
                             showCustomToast(response.getMessage());
                         }

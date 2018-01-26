@@ -149,6 +149,7 @@
                         android:textSize="@dimen/text_size_14" />
                 </LinearLayout>
 
+<!--
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -170,7 +171,9 @@
                         android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_14" />
                 </LinearLayout>
+-->
 
+<!--
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -192,7 +195,9 @@
                         android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_14" />
                 </LinearLayout>
+-->
 
+<!--
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -214,7 +219,9 @@
                         android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_14" />
                 </LinearLayout>
+-->
 
+<!--
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -232,11 +239,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin_top_10"
-                        android:text="黄飞鸿"
+                        android:text="2017-8-31"
                         android:textColor="@color/gray_text"
                         android:textSize="@dimen/text_size_14" />
                 </LinearLayout>
+-->
 
+<!--
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -250,17 +259,18 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size_14" />
 
-                    <!--<android.support.v7.widget.RecyclerView
+                    &lt;!&ndash;<android.support.v7.widget.RecyclerView
                         android:id="@+id/listview_associated"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_top_5" />-->
+                        android:layout_marginTop="@dimen/margin_top_5" />&ndash;&gt;
 
                     <TextView
                         android:id="@+id/tv_associated"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
+-->
 
                 <LinearLayout
                     android:layout_width="match_parent"

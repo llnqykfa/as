@@ -39,7 +39,7 @@ public class StockRecordAdapter extends RecyclerView.Adapter<StockRecordAdapter.
             tv_product_name = (TextView) view.findViewById(R.id.tv_product_name);
             tv_stock_num = (TextView) view.findViewById(R.id.tv_stock_num);
             tv_unit = (TextView) view.findViewById(R.id.tv_unit);
-            tv_associated = (TextView) view.findViewById(R.id.tv_associated);
+            //tv_associated = (TextView) view.findViewById(R.id.tv_associated);
             myView=view;//定义一个包括图片和文字的布局
         }
     }
@@ -82,30 +82,30 @@ public class StockRecordAdapter extends RecyclerView.Adapter<StockRecordAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Stock stock = mStock.get(position);
-        String uuid = stock .getGoods().getCode();
+        String uuid = stock.getGoods().getCode();
         String name = stock.getGoods().getName();
         String spec =  stock.getGoodsSpec()==null?null:stock.getGoodsSpec();
 
         if (spec != null) {
             Map<String, Object> valueMap = PurchaseBillUtil.getMap(spec);
             if (spec.equals("{}")) {
-                holder.tv_product_name.setText(uuid + " " + name);//商品名称
+                holder.tv_product_name.setText(uuid + "  " + name);//商品名称
+
             } else {
-                holder.tv_product_name.setText(uuid + " " + name + "  " + valueMap.keySet() + valueMap.values());//商品名称
+                holder.tv_product_name.setText(uuid + "  " + name + "  " + valueMap.keySet() + valueMap.values());//商品名称
             }
         } else {
-            holder.tv_product_name.setText(uuid + " " + name);//商品名称
+            holder.tv_product_name.setText(uuid + "  " + name);//商品名称
         }
-
         holder.tv_stock_num.setText(String.valueOf(stock.getAmount()));//库存数
         holder.tv_unit.setText(stock.getGoodsUnit().getName());//单位
 
-        if (stock.getBasketCodes() != null) {
-            List<String> associatedBasket = stock.getBasketCodes();
-            showAssociatedBasket(associatedBasket,holder);
-        } else {
-            holder.tv_associated.setText("没有关联周转箱");
-        }
+//        if (stock.getBasketCodes() != null) {
+//            List<String> associatedBasket = stock.getBasketCodes();
+//            showAssociatedBasket(associatedBasket,holder);
+//        } else {
+//            holder.tv_associated.setText("没有关联周转箱");
+//        }
 
     }
 
