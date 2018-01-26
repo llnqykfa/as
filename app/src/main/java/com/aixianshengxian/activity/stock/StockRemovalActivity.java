@@ -124,7 +124,7 @@ public class StockRemovalActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-    //周转筐查询库存
+    //扫描库存标签
     private void getQueryStock(String ucode) {
         String userUuid = SessionUtils.getInstance(getApplicationContext()).getCustomerUUID();
         String userName = SessionUtils.getInstance(getApplicationContext()).getLoginPhone();
@@ -152,7 +152,7 @@ public class StockRemovalActivity extends BaseActivity implements View.OnClickLi
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        OkHttpUtils.postString().url(UrlConstants.URL_QUERY_STOCK)
+        OkHttpUtils.postString().url(UrlConstants.URL_SCAN_BY_TRACE_CODE)
                 .addHeader("Cookie", "PHPSESSID=" + 123456)
                 .addHeader("X-Requested-With", "XMLHttpRequest")
                 .addHeader("Content-Type", "application/json;chartset=utf-8")

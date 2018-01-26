@@ -1,16 +1,8 @@
 package com.aixianshengxian.activity.stock;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,8 +11,10 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,21 +22,18 @@ import android.widget.Toast;
 
 import com.aixianshengxian.BaseActivity;
 import com.aixianshengxian.R;
-import com.aixianshengxian.activity.delivery.DeliveryActivity;
 import com.aixianshengxian.activity.search.SearchDepotActivity;
 import com.aixianshengxian.adapters.BasketUcodeAdapter;
-import com.aixianshengxian.adapters.DeliveryUcodeAdapter;
 import com.aixianshengxian.constant.DataConstant;
 import com.aixianshengxian.constant.UrlConstants;
 import com.aixianshengxian.entity.ResponseBean;
-import com.aixianshengxian.module.UcodeMessage;
+import com.aixianshengxian.http.HttpManager;
+import com.aixianshengxian.module.BroadcastAction;
 import com.aixianshengxian.util.DatesUtils;
-import com.aixianshengxian.util.SPUtil;
 import com.aixianshengxian.util.SessionUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.seuic.scanner.Scanner;
-import com.seuic.scanner.ScannerFactory;
+import com.aixianshengxian.widget.PhotoPicker;
+import com.lidong.photopicker.PhotoPickerActivity;
+import com.lidong.photopicker.PhotoPreviewActivity;
 import com.xmzynt.storm.basic.BasicConstants;
 import com.xmzynt.storm.basic.idname.IdName;
 import com.xmzynt.storm.basic.operateinfo.OperateInfo;
@@ -51,9 +42,9 @@ import com.xmzynt.storm.basic.user.UserIdentity;
 import com.xmzynt.storm.common.Platform;
 import com.xmzynt.storm.service.wms.allocate.AllocateRecord;
 import com.xmzynt.storm.service.wms.stock.Stock;
-import com.xmzynt.storm.service.wms.stockout.StockOutType;
 import com.xmzynt.storm.service.wms.warehouse.Warehouse;
 import com.xmzynt.storm.util.GsonUtil;
+import com.xmzynt.storm.util.IMGType;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -79,10 +70,16 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
     private Button btn_confirm,btn_add;
     private RecyclerView listview_associated,binding_ucode_listview;
 
-    private LinearLayout ll_nomessage;
+    private LinearLayout ll_nomessage,ll_message;
 
     private BasketUcodeAdapter mAdapter;
     private List<String> mData;
+
+    //拍照上传处
+    private static final int REQUEST_CAMERA_CODE = 19;
+    private static final int REQUEST_PREVIEW_CODE = 20;
+    private ArrayList<String> imagePaths = new ArrayList<>();
+    private ArrayList<String> imagePathsExtra = new ArrayList<>();
 
     private int page = 1;
     private int index = 0;
@@ -97,11 +94,12 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
 
     public static AllocateDetailActivity mactivity;
 
+    private PhotoPicker photoPicker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allocate_detail);
-
         init();
 
         initViews();
@@ -125,10 +123,13 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
         edt_code = (EditText) findViewById(R.id.edt_code);
         edt_allocate_num = (EditText) findViewById(R.id.edt_allocate_num);
         iv_delete = (ImageView) findViewById(R.id.iv_delete);
-        iv_photo = (ImageView) findViewById(R.id.iv_photo);
+        //iv_photo = (ImageView) findViewById(R.id.iv_photo);
         btn_confirm = (Button) findViewById(R.id.btn_confirm);
-
         ll_nomessage = (LinearLayout) findViewById(R.id.ll_nomessage);
+        ll_message = (LinearLayout) findViewById(R.id.ll_message);
+
+        photoPicker = (PhotoPicker) findViewById(R.id.photo_view);
+
         mactivity = this;
     }
 
@@ -138,7 +139,7 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
         btn_add.setOnClickListener(this);
         tv_type.setOnClickListener(this);
         iv_delete.setOnClickListener(this);
-        iv_photo.setOnClickListener(this);
+        //iv_photo.setOnClickListener(this);
         btn_confirm.setOnClickListener(this);
 
         mData = new ArrayList<>();
@@ -181,25 +182,25 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
         tv_stockin_time.setText(DatesUtils.dateToStr(Stocks.get(0).getStockInDate()));
         //产地
         tv_place = (TextView) findViewById(R.id.tv_place);
-        tv_place.setText(Stocks.get(0).getOrigin());
+        //tv_place.setText(Stocks.get(0).getOrigin());
         //批号
         tv_batch_number = (TextView) findViewById(R.id.tv_batch_number);
-        tv_batch_number.setText(Stocks.get(0).getBatchNumber());
+        //tv_batch_number.setText(Stocks.get(0).getBatchNumber());
         //生产日期
         tv_productive_time = (TextView) findViewById(R.id.tv_productive_time);
-        if (Stocks.get(0).getProduceDate() != null) {
+        /*if (Stocks.get(0).getProduceDate() != null) {
             tv_productive_time.setText(DatesUtils.dateToStr(Stocks.get(0).getProduceDate()));
         } else {
             tv_productive_time.setText("");
-        }
+        }*/
 
         //有效日期
         tv_effective_time = (TextView) findViewById(R.id.tv_effective_time);
-        if (Stocks.get(0).getEffectiveDate() != null) {
+        /*if (Stocks.get(0).getEffectiveDate() != null) {
             tv_effective_time.setText(DatesUtils.dateToStr(Stocks.get(0).getEffectiveDate()));
         } else {
             tv_effective_time.setText("");
-        }
+        }*/
 
         //调拨数量
         edt_allocate_num = (EditText) findViewById(R.id.edt_allocate_num);
@@ -236,6 +237,10 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_personal:
+                Intent intent = new Intent(
+                        BroadcastAction.ACTION_STOCK_RECORD_REFRESH);
+                // 发送广播
+                sendBroadcast(intent);
                 finish();
                 break;
             case R.id.btn_add:
@@ -248,8 +253,8 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
             case R.id.iv_delete:
                 edt_code.setText("");
                 break;
-            case R.id.iv_photo:
-                break;
+            /*case R.id.iv_photo:
+                break;*/
             case R.id.btn_confirm:
                 check();
                 break;
@@ -274,6 +279,25 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
                     outDepot.setName(warehouse.getName());
                     allocateRecord.setInWarehouse(outDepot);
                 }
+            }
+        }
+        //照片上传处
+        if(resultCode == RESULT_OK) {
+            switch (requestCode) {
+                // 选择照片
+                case REQUEST_CAMERA_CODE:
+                    imagePaths = data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_RESULT);
+                    Log.d(TAG, "list: " + "list = [" + imagePaths.size());
+                    photoPicker.requestCameraCallback(imagePaths);
+//                    pickloadAdpater(list);
+                    break;
+                // 预览
+                case REQUEST_PREVIEW_CODE:
+                    imagePathsExtra = data.getStringArrayListExtra(PhotoPreviewActivity.EXTRA_RESULT);
+                    Log.d(TAG, "ListExtra: " + "ListExtra = [" + imagePathsExtra.size());
+//                    loadAdpater(ListExtra);
+                    photoPicker.requestCameraCallback(imagePathsExtra);
+                    break;
             }
         }
     }
@@ -351,14 +375,16 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
     private void getQueryStock() {
         if (Stocks.size() == 0) {
             ll_nomessage.setVisibility(View.VISIBLE);
+            ll_message.setVisibility(View.GONE);
         } else {
+            ll_message.setVisibility(View.VISIBLE);
             initData();
-            if (Stocks.get(0).getBasketCodes() != null) {
+            /*if (Stocks.get(0).getBasketCodes() != null) {
                 List<String> associatedBasket = Stocks.get(0).getBasketCodes();
                 showAssociatedBasket(associatedBasket);
             } else {
                 tv_associated.setText("没有关联周转箱");
-            }
+            }*/
             ll_nomessage.setVisibility(View.GONE);
         }
     }
@@ -386,6 +412,21 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
             } else {
                 if (!String.valueOf(edt_allocate_num.getText()).equals("") && new BigDecimal(String.valueOf(edt_allocate_num.getText())).compareTo(BigDecimal.ZERO) > 0) {
                     getAllocate();
+                    /*new Thread(){
+                        @Override
+                        public void run() {
+                            super.run();*/
+                            //HttpManager.upLoadPhoto(this,AllocateDetailActivity.this,imagePaths);
+                            String userUuid = SessionUtils.getInstance(getApplication()).getCustomerUUID();
+                            if (imagePaths.contains("000000")){
+                                imagePaths.remove("000000");
+                            }
+                            if (imagePaths.size() > 0) {
+                                HttpManager.upLoadPhoto(AllocateDetailActivity.this,userUuid,imagePaths, IMGType.GOODS_IMG.name());
+                            }
+
+                        /*}
+                    }.start();*/
                 } else {
                     showCustomToast("调拨数量不能为空或者为“0”");
                 }
@@ -429,7 +470,7 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
         allocateRecord.setOperateInfo(operateInfo);//operateInfo
         allocateRecord.setRemark(Stocks.get(0).getRemark());//remark
         allocateRecord.setSourceStockUuid(Stocks.get(0).getUuid());
-        allocateRecord.setBasketCodes(mData);
+        //allocateRecord.setBasketCodes(mData);
         JSONObject reparams = new JSONObject();
         try {
             JSONObject body = new JSONObject();
@@ -466,6 +507,10 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
                         if (response.getErrorCode() == 0) {
                             showCustomToast("请求成功");
                             finish();
+                            Intent intent = new Intent(
+                                    BroadcastAction.ACTION_STOCK_RECORD_REFRESH);
+                            // 发送广播
+                            sendBroadcast(intent);
                             showLogDebug("main", s);
                         }  else {
                             showCustomToast(response.getMessage());
@@ -473,5 +518,4 @@ public class AllocateDetailActivity extends BaseActivity implements View.OnClick
                     }
                 });
     }
-
 }

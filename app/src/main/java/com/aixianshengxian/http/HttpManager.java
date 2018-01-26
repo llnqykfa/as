@@ -4,9 +4,9 @@ package com.aixianshengxian.http;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.aixianshengxian.BaseActivity;
 import com.aixianshengxian.activity.machine.MachineActivity;
 import com.aixianshengxian.activity.machine.SelectReceiveActivity;
-import com.aixianshengxian.activity.machine.StockInActivity;
 import com.aixianshengxian.activity.plan.AddPlanActivity;
 import com.aixianshengxian.activity.purchase.AddPurchaseActivity;
 import com.aixianshengxian.activity.purchase.PurchaseActivity;
@@ -18,18 +18,18 @@ import com.aixianshengxian.entity.ResponseBean;
 import com.aixianshengxian.listener.GetOperatorResultInterface;
 import com.aixianshengxian.listener.UnitInterface;
 import com.aixianshengxian.util.JsonUtil;
-import com.aixianshengxian.util.SessionUtils;
+import com.aixianshengxian.util.ToastUtil;
 import com.google.gson.reflect.TypeToken;
+import com.xmzynt.storm.basic.BasicConstants;
 import com.xmzynt.storm.basic.constants.MDataConstants;
 import com.xmzynt.storm.basic.constants.SaleConstants;
 import com.xmzynt.storm.basic.idname.IdName;
 import com.xmzynt.storm.basic.user.UserType;
+import com.xmzynt.storm.common.Platform;
 import com.xmzynt.storm.service.goods.UnitPrice;
 import com.xmzynt.storm.service.process.ForecastProcessPlan;
 import com.xmzynt.storm.service.purchase.bill.PurchaseBill;
-import com.xmzynt.storm.service.purchase.bill.PurchaseBillStatus;
 import com.xmzynt.storm.service.purchase.plan.ForecastPurchase;
-import com.xmzynt.storm.service.wms.stockin.StockInRecord;
 import com.xmzynt.storm.service.wms.stockout.StockOutRecord;
 import com.xmzynt.storm.util.GsonUtil;
 import com.xmzynt.storm.util.query.PageData;
@@ -40,15 +40,30 @@ import com.zhy.http.okhttp.callback.StringCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class HttpManager {
+    private static String prefix = "--";
+    private static String end = "\r\n";
+    private static final OkHttpClient client = new OkHttpClient();
 
     private static String getRequestParams(Context context, String key, String bodyParams) {
         JSONObject params = JsonUtil.buildParams(context);
@@ -584,6 +599,118 @@ public class HttpManager {
                         }
                     }
                 });
+    }
+
+    //拍照上传处
+    public static void upLoadPhoto(/*Thread thread ,*/final Context context,String userUuid,List<String> imagePaths,String imgType) {
+        byte[] image = null;
+        try {
+            for (int i = 0;i < imagePaths.size();i ++) {
+                image = readStream(imagePaths.get(i));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //RequestBody body = RequestBody.create(MediaType.parse("multipart/form-data;boundary=android"),image);
+        MultipartBody.Builder mbody=new MultipartBody.Builder().setType(MultipartBody.FORM);
+        List<File> mFile = new ArrayList<>();
+        for (int i = 0;i < imagePaths.size();i ++) {
+            String imagepath = imagePaths.get(i);
+            File file = new File(imagepath);
+            String imageType = imagepath.substring(imagepath.length()-3);
+            final MediaType MEDIA_TYPE = MediaType.parse("image/" + imageType);
+            mbody.addFormDataPart("Content-Disposition: form-data; name=\"file\"; filename=\"",file.getName(),RequestBody.create(MEDIA_TYPE,file));
+            mFile.add(file);
+        }
+        MultipartBody requestBody = mbody.build();
+
+        /*//构建请求
+        Request request = new Request.Builder()
+                .url(UrlConstants.URL_UPLOAD_PHOTO)//地址
+                .addHeader("Cookie", "PHPSESSID=" + 123456)
+                .addHeader("X-Requested-With", "XMLHttpRequest")
+                .addHeader("Content-Type", "application/json;chartset=utf-8")
+                .addHeader(BasicConstants.Field.UUID, userUuid)
+                .addHeader(DataConstant.IMG_TYPE,imgType)
+                .post(requestBody)//添加请求体
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                System.out.println("上传失败:e.getLocalizedMessage() = " + e.getLocalizedMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                ResponseBean s = GsonUtil.getGson().fromJson(String.valueOf(response), ResponseBean.class);
+                //System.out.println("上传照片成功：response = " + response.body().string());
+            }
+        });*/
+
+        OkHttpUtils.postFile().url(UrlConstants.URL_UPLOAD_PHOTO)
+                .addHeader("Cookie", "PHPSESSID=" + 123456)
+                .addHeader("X-Requested-With", "XMLHttpRequest")
+                .addHeader("Content-Type", "application/json;chartset=utf-8")
+                .addHeader(BasicConstants.Field.UUID, userUuid)
+                .addHeader(DataConstant.IMG_TYPE,imgType)
+                //.mediaType(MediaType.parse("multipart/form-data;boundary=android"))
+                .tag(requestBody)
+                .file(mFile.get(0))
+                .build()
+                .execute(new StringCallback() {
+
+                    @Override
+                    public void onError(Call call, Exception e, int i) {
+                        ToastUtil.showCustomToast(context,"请求失败");
+                    }
+
+                    @Override
+                    public void onResponse(String s, int i) {
+                        ResponseBean response = GsonUtil.getGson().fromJson(s, ResponseBean.class);
+                        if (response.getErrorCode() == 0) {
+                            ToastUtil.showCustomToast(context,"请求成功");
+                            //showLogDebug("main", s);
+                        }  else {
+                            ToastUtil.showCustomToast(context,response.getMessage());
+                        }
+                    }
+                });
+    }
+
+    public static byte[] readStream(String imagepath) throws Exception {
+        StringBuffer sb = new StringBuffer();
+        sb.append(prefix);
+        sb.append("Android");
+        sb.append(end);
+        sb.append("Content-Disposition: form-data; name=\"file\"; filename=\"" + imagepath + "\"" + end);
+        sb.append("Content-Type:image/" + imagepath.substring(imagepath.length()-3) + end);
+        sb.append(end);
+        FileInputStream fs = new FileInputStream(imagepath);
+
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        while (-1 != (len = fs.read(buffer))) {
+            outStream.write(buffer, 0, len);
+        }
+        outStream.close();
+        fs.close();
+        StringBuffer sb2 = new StringBuffer();
+        sb2.append(end);
+        sb2.append(prefix + "Android" + prefix);
+        sb2.append(end);
+        byte[] outStreamByte = outStream.toByteArray();
+        byte[] sbByte = sb.toString().getBytes();
+        byte[] sb2Byte = sb2.toString().getBytes();
+        byte[] finalByte = new byte[sbByte.length + outStreamByte.length + sb2Byte.length];
+        System.arraycopy(sbByte,0,finalByte,0,sbByte.length);
+        System.arraycopy(outStreamByte,0,finalByte,sbByte.length,outStreamByte.length);
+        System.arraycopy(sb2Byte,0,finalByte,sbByte.length + outStreamByte.length,sb2Byte.length);
+        return finalByte;
     }
 
 }

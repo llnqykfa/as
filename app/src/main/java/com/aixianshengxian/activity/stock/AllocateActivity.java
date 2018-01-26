@@ -90,7 +90,7 @@ public class AllocateActivity extends BaseActivity implements View.OnClickListen
             case R.id.btn_search:
                 String ucode = String.valueOf(edt_code.getText());
                 if (ucode.equals("")) {
-                    showCustomToast("请先扫描周转筐标签！");
+                    showCustomToast("请先扫描标签！");
                 } else {
                     getQueryStock(ucode);
                 }
@@ -109,7 +109,7 @@ public class AllocateActivity extends BaseActivity implements View.OnClickListen
                 break;
         }
     }
-    //周转筐查询库存
+    //扫描库存标签
     private void getQueryStock(String ucode) {
         String userUuid = SessionUtils.getInstance(getApplicationContext()).getCustomerUUID();
         String userName = SessionUtils.getInstance(getApplicationContext()).getLoginPhone();
@@ -137,7 +137,7 @@ public class AllocateActivity extends BaseActivity implements View.OnClickListen
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        OkHttpUtils.postString().url(UrlConstants.URL_QUERY_STOCK)
+        OkHttpUtils.postString().url(UrlConstants.URL_SCAN_BY_TRACE_CODE)
                 .addHeader("Cookie", "PHPSESSID=" + 123456)
                 .addHeader("X-Requested-With", "XMLHttpRequest")
                 .addHeader("Content-Type", "application/json;chartset=utf-8")

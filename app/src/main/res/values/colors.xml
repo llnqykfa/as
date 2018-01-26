@@ -141,4 +141,5 @@
     <color name="gray_background">#F5F5F5</color>
     <color name="green_text">#00A762</color>
     <color name="green_background">#F0F4F7</color>
+    <color name="photopicker_background">#181819</color>
 </resources>

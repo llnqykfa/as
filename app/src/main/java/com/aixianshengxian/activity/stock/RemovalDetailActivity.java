@@ -20,6 +20,7 @@ import com.aixianshengxian.R;
 import com.aixianshengxian.constant.DataConstant;
 import com.aixianshengxian.constant.UrlConstants;
 import com.aixianshengxian.entity.ResponseBean;
+import com.aixianshengxian.module.BroadcastAction;
 import com.aixianshengxian.util.DatesUtils;
 import com.aixianshengxian.util.SessionUtils;
 import com.google.gson.reflect.TypeToken;
@@ -104,25 +105,25 @@ public class RemovalDetailActivity extends BaseActivity implements View.OnClickL
         tv_stockin_time.setText(DatesUtils.dateToStr(Stocks.get(0).getStockInDate()));
         //产地
         tv_place = (TextView) findViewById(R.id.tv_place);
-        tv_place.setText(Stocks.get(0).getOrigin());
+//        tv_place.setText(Stocks.get(0).getOrigin());
         //批号
         tv_batch_number = (TextView) findViewById(R.id.tv_batch_number);
-        tv_batch_number.setText(Stocks.get(0).getBatchNumber());
+//        tv_batch_number.setText(Stocks.get(0).getBatchNumber());
         //生产日期
         tv_productive_time = (TextView) findViewById(R.id.tv_productive_time);
-        if (Stocks.get(0).getProduceDate() != null) {
-            tv_productive_time.setText(DatesUtils.dateToStr(Stocks.get(0).getProduceDate()));
-        } else {
-            tv_productive_time.setText("");
-        }
+//        if (Stocks.get(0).getProduceDate() != null) {
+//            tv_productive_time.setText(DatesUtils.dateToStr(Stocks.get(0).getProduceDate()));
+//        } else {
+//            tv_productive_time.setText("");
+//        }
 
         //有效日期
         tv_effective_time = (TextView) findViewById(R.id.tv_effective_time);
-        if (Stocks.get(0).getEffectiveDate() != null) {
-            tv_effective_time.setText(DatesUtils.dateToStr(Stocks.get(0).getEffectiveDate()));
-        } else {
-            tv_effective_time.setText("");
-        }
+//        if (Stocks.get(0).getEffectiveDate() != null) {
+//            tv_effective_time.setText(DatesUtils.dateToStr(Stocks.get(0).getEffectiveDate()));
+//        } else {
+//            tv_effective_time.setText("");
+//        }
         //出库数量
         edt_removal_num = (EditText) findViewById(R.id.edt_removal_num);
         //这个很重要，先移开TextWatcher的监听器
@@ -181,6 +182,10 @@ public class RemovalDetailActivity extends BaseActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.image_personal:
+                Intent intent = new Intent(
+                        BroadcastAction.ACTION_STOCK_RECORD_REFRESH);
+                // 发送广播
+                sendBroadcast(intent);
                 finish();
                 break;
             case R.id.btn_confirm:
@@ -261,12 +266,12 @@ public class RemovalDetailActivity extends BaseActivity implements View.OnClickL
             ll_nomessage.setVisibility(View.VISIBLE);
         } else {
             initData();
-            if (Stocks.get(0).getBasketCodes() != null) {
-                List<String> associatedBasket = Stocks.get(0).getBasketCodes();
-                showAssociatedBasket(associatedBasket);
-            } else {
-                tv_associated.setText("没有关联周转箱");
-            }
+//            if (Stocks.get(0).getBasketCodes() != null) {
+//                List<String> associatedBasket = Stocks.get(0).getBasketCodes();
+//                showAssociatedBasket(associatedBasket);
+//            } else {
+//                tv_associated.setText("没有关联周转箱");
+//            }
             ll_nomessage.setVisibility(View.GONE);
         }
     }
@@ -321,15 +326,15 @@ public class RemovalDetailActivity extends BaseActivity implements View.OnClickL
         //stockOutRecord.setSourceBillNumber(Stocks.get(0));//SourceBillNumber
         //stockOutRecord.setSourceBillLineUuid(Stocks.get(0).ge);//SourceBillLineUuid
         stockOutRecord.setQuantity(new BigDecimal(String.valueOf(edt_removal_num.getText())));//quantity
-        stockOutRecord.setPrice(Stocks.get(0).getPrice());//price
+//        stockOutRecord.setPrice(Stocks.get(0).getPrice());//price
         stockOutRecord.setCoefficient(BigDecimal.ONE);//coefficient
         stockOutRecord.setOutDate(new Date());//outData
         stockOutRecord.setRemark(Stocks.get(0).getRemark());//remark
-        stockOutRecord.setOrigin(Stocks.get(0).getOrigin());//origin
-        stockOutRecord.setBatchNumber(Stocks.get(0).getBatchNumber());//batchNumber
-        stockOutRecord.setListingCertificateNo(Stocks.get(0).getListingCertificateNo());//certificateNo
-        stockOutRecord.setProduceDate(Stocks.get(0).getProduceDate());//produceDate
-        stockOutRecord.setEffectiveDate(Stocks.get(0).getEffectiveDate());//effectiveDate
+//        stockOutRecord.setOrigin(Stocks.get(0).getOrigin());//origin
+//        stockOutRecord.setBatchNumber(Stocks.get(0).getBatchNumber());//batchNumber
+//        stockOutRecord.setListingCertificateNo(Stocks.get(0).getListingCertificateNo());//certificateNo
+//        stockOutRecord.setProduceDate(Stocks.get(0).getProduceDate());//produceDate
+//        stockOutRecord.setEffectiveDate(Stocks.get(0).getEffectiveDate());//effectiveDate
         //stockIOutRecord.setMaterials();//materials，加工入库
         stockOutRecord.setImages(mImage);//image
         stockOutRecord.setSdStockOutQty(stockOutRecord.getCoefficient().multiply(stockOutRecord.getQuantity()));//sdStockOutQty
@@ -369,8 +374,12 @@ public class RemovalDetailActivity extends BaseActivity implements View.OnClickL
                         ResponseBean response = GsonUtil.getGson().fromJson(s, ResponseBean.class);
                         if (response.getErrorCode() == 0) {
                             showCustomToast("请求成功");
-                            showLogDebug("main", s);
                             finish();
+                            Intent intent = new Intent(
+                                    BroadcastAction.ACTION_STOCK_RECORD_REFRESH);
+                            // 发送广播
+                            sendBroadcast(intent);
+                            showLogDebug("main", s);
                         }  else {
                             showCustomToast(response.getMessage());
                         }

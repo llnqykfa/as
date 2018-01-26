@@ -138,6 +138,7 @@
     <orderEntry type="library" exported="" name="__local_jars__:/Users/pm89/Library/Android/AndroidStudioProjects/as/app/libs/volley.jar:unspecified@jar" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:/Users/pm89/Library/Android/AndroidStudioProjects/as/app/libs/classes.jar:unspecified@jar" level="project" />
     <orderEntry type="module" module-name="pulltorefresh" exported="" />
+    <orderEntry type="module" module-name="photopicker" exported="" />
     <orderEntry type="module" module-name="myokhttp" exported="" />
   </component>
 </module>
